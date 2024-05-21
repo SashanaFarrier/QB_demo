@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>QuickBooks Demo sample application using QBFC</h1>
+    <h2>Get customer names</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        @using (Html.BeginForm("InitiateAuth", "App", FormMethod.Post))
+        {
+
+            <div><input type="submit" name="submitButton" value="Connect to QuickBooks"/></div>
+            <br/>
+          
+            <br/>
+        }
+</div>
+</div>

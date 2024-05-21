@@ -1,0 +1,18 @@
+﻿@model List<MvcCodeFlowClientManual.Models.Customers>
+@{
+    ViewBag.Title = "API Call Response";
+}
+
+<h2>API Call Response</h2>
+<ul>
+   @foreach(var customer in Model)
+            {
+                <li>@customer.FullName</li>
+            }
+
+</ul>
+
+@*<p style="word-wrap: break-word;">@Model</p>*@
+
+
+
