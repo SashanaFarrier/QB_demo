@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC Manual Code Flow Client", "MVC Manual Code Flow Client.csproj", "{C67DB8BB-6083-436D-9748-4BDD9EC8C0EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "..\ConsoleApp1\ConsoleApp1.csproj", "{97A0449A-49E9-4CB3-A094-2C9CBCB1ADA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{C67DB8BB-6083-436D-9748-4BDD9EC8C0EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C67DB8BB-6083-436D-9748-4BDD9EC8C0EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C67DB8BB-6083-436D-9748-4BDD9EC8C0EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97A0449A-49E9-4CB3-A094-2C9CBCB1ADA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97A0449A-49E9-4CB3-A094-2C9CBCB1ADA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97A0449A-49E9-4CB3-A094-2C9CBCB1ADA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97A0449A-49E9-4CB3-A094-2C9CBCB1ADA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DAFC4E5C-3B3A-4C1C-8E13-D489AA1003F5}
 	EndGlobalSection
 EndGlobal

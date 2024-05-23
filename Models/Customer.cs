@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MvcCodeFlowClientManual.Models
 {
-    public class Customers
+    public class Customer
     {
         public string FullName { get; set; }
     }

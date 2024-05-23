@@ -5,57 +5,30 @@ using System.Net;
 using System.Collections.Generic;
 using MvcCodeFlowClientManual.Models;
 using QBFC15Lib;
+using MvcCodeFlowClientManual.Config;
 
 
 namespace MvcCodeFlowClientManual.Controllers
 {
     public class AppController : Controller
     {
-        //public static string appId = ConfigurationManager.AppSettings["appId"];
-        //public static string appCertificate = ConfigurationManager.AppSettings["appCertificate"];
-        //public static string companyFile = ConfigurationManager.AppSettings["companyFile"];
 
-        public IList<Customers> customers = new List<Customers>();
+        public IList<Customer> customers = new List<Customer>();
 
-        public static QBSessionManager sessionManager = new QBSessionManager();
+        public QBConnection qBConnection = new QBConnection();
 
-        /// <summary>
-        /// Use the Index page of App controller to get all endpoints from discovery url
-        /// </summary>
-        public ActionResult Index()
+        private QBSessionManager sessionManager;
+        public IList<Customer> ApiCallService()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            Session.Clear();
-            Session.Abandon();
-            Request.GetOwinContext().Authentication.SignOut("Cookies");
-            return View();
-        }
-
-        /// <summary>
-        /// Start Auth flow
-        /// </summary>
-        public ActionResult InitiateAuth(string submitButton)
-        {
-            switch (submitButton)
-            {
-                case "Connect to QuickBooks":
-                ConnectToQuickBooks();
-                return RedirectToAction("ApiCallService");
-                default:
-                    return (View());
-            }
-        }
-
-        public ActionResult ApiCallService()
-        {
-            if (sessionManager != null)
+            if (qBConnection.getSessionManager() != null)
             {
                 try
                 {
-                   // sessionManager.QBXMLVersionsForSession.ToString();
+
+                    sessionManager = qBConnection.getSessionManager();
 
                     IMsgSetRequest requestMsgSet = sessionManager.CreateMsgSetRequest("US", 13, 0);
-                    
+
                     ICustomerQuery customerQuery = requestMsgSet.AppendCustomerQueryRq();
 
                     IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
@@ -64,7 +37,7 @@ namespace MvcCodeFlowClientManual.Controllers
 
                     IResponse response = responseList.GetAt(0);
 
-                    if(response.StatusCode == 0)
+                    if (response.StatusCode == 0)
                     {
                         IResponseType responseType = response.Type;
 
@@ -73,24 +46,25 @@ namespace MvcCodeFlowClientManual.Controllers
                         for (int i = 0; i < customertList.Count; i++)
                         {
                             ICustomerRet customerRet = customertList.GetAt(i);
-                            Customers customer = new Customers();
-                            customer.FullName = customerRet.FullName.GetValue();
+                            string customerName = customerRet.FullName.GetValue();
+
+                            var customer = new Customer()
+                            {
+                                FullName = customerName
+                            };
+
                             customers.Add(customer);
                         }
                     }
-                   
-                       return View(customers);
 
                 }
                 catch (Exception ex)
                 {
-                    return View("ApiCallService", (object)("QB API call Failed!" + " Error message: " + ex.Message));
+                    Console.WriteLine(ex.Message);
                 }
+
             }
-            else
-            {
-                 return View("ApiCallService", (object)"QB API call Failed!");
-            }
+            return customers;
         }
 
         public ActionResult Error()
@@ -98,14 +72,6 @@ namespace MvcCodeFlowClientManual.Controllers
             return View("Error");
         }
 
-        private void ConnectToQuickBooks()
-        {   // Connect to QuickBooks Desktop
-            sessionManager = new QBSessionManager();
-            
-            //Hardcoded QB application name on local system. Make changes based on the name of your application 
-            sessionManager.OpenConnection("", "Test");
-            sessionManager.BeginSession("", ENOpenMode.omDontCare);
-        }
     }
 
 }
