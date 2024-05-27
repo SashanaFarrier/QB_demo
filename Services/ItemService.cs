@@ -17,7 +17,7 @@ namespace MvcCodeFlowClientManual.Services
         private QBSessionManager sessionManager;
 
         //We will have to change the object name from Item as a current object within the qb lib already has that name, so there's a conflict
-        public IList<Models.Item> itemList = new List<Models.Item>();
+        public IList<Models.Item> Items = new List<Models.Item>();
         public IList<Models.Item> GetItems()
         {
            
@@ -46,20 +46,25 @@ namespace MvcCodeFlowClientManual.Services
                         for (int i = 0; i < itemInventoryList.Count; i++)
                         {
                             IItemInventoryRet itemInventoryRet = itemInventoryList.GetAt(i);
-                            string itemId = itemInventoryRet.ListID.GetValue();
-                            string itemName = itemInventoryRet.Name.GetValue();
-                            string itemDesc = itemInventoryRet.SalesDesc.GetValue();
-                            int itemQuantity = (int)itemInventoryRet.QuantityOnHand.GetValue();
 
-                            var item = new Models.Item()
+                            if(itemInventoryRet != null)
                             {
-                                ItemId = itemId,
-                                Name = itemName,
-                                Description = itemDesc,
-                                Quantity = itemQuantity,
-                            };
+                                string itemId = itemInventoryRet.ListID.GetValue();
+                                string itemName = itemInventoryRet.Name.GetValue();
+                                //string itemDesc = itemInventoryRet.SalesDesc.GetValue();
+                                int itemQuantity = (int)itemInventoryRet.QuantityOnHand.GetValue();
+
+                                var item = new Models.Item()
+                                {
+                                    ItemId = itemId,
+                                    Name = itemName,
+                                    //Description = itemDesc,
+                                    Quantity = itemQuantity,
+                                };
+
+                                Items.Add(item);
+                            }
                            
-                            itemList.Add(item);
                         }
                     }
                 }
@@ -69,7 +74,7 @@ namespace MvcCodeFlowClientManual.Services
                 }
             }
            
-            return (itemList);
+            return (Items);
         }
     }
 }
