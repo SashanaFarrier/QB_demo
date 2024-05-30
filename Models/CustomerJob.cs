@@ -9,11 +9,11 @@ namespace MvcCodeFlowClientManual.Models
     {
         public string CustomerListID { get; set; }
         public string Name { get; set; }
-        public Dictionary<string, List<string>> Locations { get; set; }
+        public List<string> Locations { get; set; }
         //public Location Location { get; set; }
-        public CustomerJob(string id, string name, Dictionary<string, List<string>> locations)
+        public CustomerJob(string name, List<string> locations)
         {
-            this.CustomerListID = id;
+            //this.CustomerListID = id;
             this.Name = name;
             this.Locations = locations;
         }

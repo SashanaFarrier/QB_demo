@@ -15,6 +15,8 @@ namespace MvcCodeFlowClientManual.Services
 
         public IList<CustomerJob> CustomerJobs = new List<CustomerJob>();
 
+        List<string> locations = new List<string>();
+
         public IList<CustomerJob> GetCustomerJobs()
         {
 
@@ -26,7 +28,7 @@ namespace MvcCodeFlowClientManual.Services
 
                     IMsgSetRequest requestMsgSet = sessionManager.CreateMsgSetRequest("US", 13, 0);
 
-                    ISalesOrderQuery orderQuery = requestMsgSet.AppendSalesOrderQueryRq();
+                    ICustomerQuery orderQuery = requestMsgSet.AppendCustomerQueryRq();
 
                     IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
 
@@ -38,59 +40,46 @@ namespace MvcCodeFlowClientManual.Services
                     {
                         IResponseType responseType = response.Type;
 
-                        ISalesOrderRetList salesOrderList = (ISalesOrderRetList)response.Detail;
-
-                        //To access the IORSalesOrderLineRet obj where desc, quantity and rate are stored.
-                        //IORSalesOrderLineRetList oRSalesOrderLineRetList = salesOrderList.GetAt(0).ORSalesOrderLineRetList;
+                        ICustomerRetList customerQueryList = (ICustomerRetList)response.Detail;
 
                         string prevCustomer = string.Empty;
-                        List<string> locations = new List<string>();
-                        Dictionary<string, List<string>> finalLocation = new Dictionary<string, List<string>>();
-                        CustomerJob Job = null;
-                        for (int i = 0; i < salesOrderList.Count; i++)
+                       
+                        for (int i = 0; i < customerQueryList.Count; i++)
                         {
-                            ISalesOrderRet salesOrderRet = salesOrderList.GetAt(i);
+                            string customer = customerQueryList.GetAt(i).FullName.GetValue();
 
-                            IQBBaseRef customerRef = salesOrderRet.CustomerRef;
-
-                            //string customerListId = salesOrderRet.CustomerRef.ListID.GetValue();
-                            //string customer = salesOrderRet.CustomerRef.FullName.GetValue();
-
-                            string customerListId = customerRef.ListID.GetValue();
-                            string customer = customerRef.FullName.GetValue();
-
-                            string[] customerJob = customer.Split(':');
-                            string customerName = customerJob[0];
-                            string location = customerJob[1];
-
-                            //Adding all locations for current customer
-                            if(prevCustomer == customerName) 
-                            {
-                                locations.Add(location);
-                            }
-                            else
-                            {
-
-                                finalLocation.Add(customerName,locations);
-                                Job = new CustomerJob(customerListId, customerName, finalLocation);
-                                locations = new List<string>();
-
-                            }
-                           
-
-                            //locations.Add(location);
+                            //string currentCustomer = customer;
                             
-                            if(Job != null)
+                            if(prevCustomer == "" && !customer.Contains(':'))
                             {
-                                CustomerJobs.Add(Job);
-                                Job = null;
+                                prevCustomer = customer;
                             }
-                           
 
-                            //CustomerJobs.Add();
+                            if(customer.Contains(':'))
+                            {
+                                string[] customerJob = customer.Split(':');
+                                string customerName = customerJob[0];
+                                string location = customerJob[1];
+
+                                if(prevCustomer == customerName)
+                                {
+                                    locations.Add(location);
+                                    //prevCustomer = customerName;
+                                }
+                                
+                                if (i <= customerQueryList.Count - 1 )
+                                {
+                                    string customer2 = customerQueryList.GetAt(i + 1).FullName.GetValue();
+                                    if (!customer2.Contains(':'))
+                                    {
+                                       CustomerJobs.Add(new CustomerJob(customerName, locations));
+                                        locations = new List<string>();
+                                        prevCustomer = customer2;
+
+                                    }
+                                }
+                            }
                         }
-
-
                     }
                 }
                 catch (Exception ex)
@@ -98,7 +87,7 @@ namespace MvcCodeFlowClientManual.Services
                     Console.Write(ex.Message);
                 }
             }
-
+            
             return (CustomerJobs);
         }
     }

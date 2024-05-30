@@ -15,9 +15,12 @@ namespace MvcCodeFlowClientManual.Services
         public QBConnection qBConnection = new QBConnection();
 
         private QBSessionManager sessionManager;
+        bool sessionBegun = false;
+        bool connectionOpen = false;
 
         //We will have to change the object name from Item as a current object within the qb lib already has that name, so there's a conflict
-        public IList<Models.Item> Items = new List<Models.Item>();
+        public IList<Models.Item> InventoryItems = new List<Models.Item>();
+        List<object> SubItems = new List<object>();
         public IList<Models.Item> GetItems()
         {
            
@@ -26,12 +29,20 @@ namespace MvcCodeFlowClientManual.Services
                 try
                 {
                     sessionManager = qBConnection.getSessionManager();
+                    connectionOpen = true;
 
                     IMsgSetRequest requestMsgSet = sessionManager.CreateMsgSetRequest("US", 13, 0);
 
                     IItemInventoryQuery itemQuery = requestMsgSet.AppendItemInventoryQueryRq();
 
+                    sessionBegun = true;
+
                     IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
+
+                    sessionManager.EndSession();
+                    sessionBegun = false;
+                    sessionManager.CloseConnection();
+                    connectionOpen = false;
 
                     IResponseList responseList = responseMsgSet.ResponseList;
 
@@ -41,30 +52,40 @@ namespace MvcCodeFlowClientManual.Services
                     {
                         IResponseType responseType = response.Type;
 
-                        IItemInventoryRetList itemInventoryList = (IItemInventoryRetList)response.Detail; 
+                        IItemInventoryRetList itemInventoryList = (IItemInventoryRetList)response.Detail;
 
                         for (int i = 0; i < itemInventoryList.Count; i++)
                         {
                             IItemInventoryRet itemInventoryRet = itemInventoryList.GetAt(i);
+                            //int sublevelVal = itemInventoryRet.Sublevel.GetValue();
+                            string item = itemInventoryRet.FullName.GetValue();
+                            string itemDesc = itemInventoryRet.SalesDesc != null ? itemInventoryRet.SalesDesc.GetValue() : "";
+                            int quantity = (int)itemInventoryRet.QuantityOnHand.GetValue();
 
-                            if(itemInventoryRet != null)
+                            if(!item.Contains(':'))
                             {
-                                string itemId = itemInventoryRet.ListID.GetValue();
-                                string itemName = itemInventoryRet.Name.GetValue();
-                                //string itemDesc = itemInventoryRet.SalesDesc.GetValue();
-                                int itemQuantity = (int)itemInventoryRet.QuantityOnHand.GetValue();
-
-                                var item = new Models.Item()
+                                SubItems = new List<object>();
+                                InventoryItems.Add(new Models.Item(item, itemDesc, quantity, SubItems));
+                            } 
+                            else
+                            {
+                                string[] inventory = item.Split(':');
+                                string itemName = inventory[0];
+                                string subItem = inventory[1];
+                               
+                                if (InventoryItems.Count > 0)
                                 {
-                                    ItemId = itemId,
-                                    Name = itemName,
-                                    //Description = itemDesc,
-                                    Quantity = itemQuantity,
-                                };
+                                    foreach (var x in InventoryItems)
+                                    {
+                                        if (x.Name.Equals(itemName))
+                                        {
+                                            SubItems.Add(new { subItem, itemDesc, quantity });
+                                        }
+                                    }
+                                }
 
-                                Items.Add(item);
+
                             }
-                           
                         }
                     }
                 }
@@ -74,7 +95,7 @@ namespace MvcCodeFlowClientManual.Services
                 }
             }
            
-            return (Items);
+            return (InventoryItems);
         }
     }
 }
