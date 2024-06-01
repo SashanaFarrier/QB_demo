@@ -18,6 +18,11 @@ namespace MvcCodeFlowClientManual.Controllers
         public QBConnection qBConnection = new QBConnection();
 
         private QBSessionManager sessionManager;
+
+        public ActionResult Index()
+        {
+            return View();
+        }
         public IList<Customer> ApiCallService()
         {
             if (qBConnection.getSessionManager() != null)

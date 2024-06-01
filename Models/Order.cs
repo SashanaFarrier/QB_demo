@@ -15,9 +15,10 @@ namespace MvcCodeFlowClientManual.Models
         public string Description { get; set; }
         public double Quantity { get; set; }
         public double Rate { get; set; }
-        public double SubTotal { get; set; }
-        public double Tax { get; set; }
-        public double Total { get; set; }
+        public double Amount { get; set; }
+       // public double SubTotal { get; set; }
+        public bool Tax { get; set; }
+       // public double Total { get; set; }
     }
 
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.SessionState;
+using Item = MvcCodeFlowClientManual.Models.Item;
 
 namespace MvcCodeFlowClientManual.Services
 {
@@ -15,11 +16,11 @@ namespace MvcCodeFlowClientManual.Services
         public QBConnection qBConnection = new QBConnection();
 
         private QBSessionManager sessionManager;
-        bool sessionBegun = false;
-        bool connectionOpen = false;
+        private bool sessionBegun = false;
+        private bool connectionOpen = false;
 
         //We will have to change the object name from Item as a current object within the qb lib already has that name, so there's a conflict
-        public IList<Models.Item> InventoryItems = new List<Models.Item>();
+        public IList<Models.Item> AllItemsList = new List<Models.Item>();
         List<object> SubItems = new List<object>();
         public IList<Models.Item> GetItems()
         {
@@ -33,8 +34,7 @@ namespace MvcCodeFlowClientManual.Services
 
                     IMsgSetRequest requestMsgSet = sessionManager.CreateMsgSetRequest("US", 13, 0);
 
-                    IItemInventoryQuery itemQuery = requestMsgSet.AppendItemInventoryQueryRq();
-
+                    IItemQuery itemQuery = requestMsgSet.AppendItemQueryRq();
                     sessionBegun = true;
 
                     IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
@@ -48,44 +48,148 @@ namespace MvcCodeFlowClientManual.Services
 
                     IResponse response = responseList.GetAt(0);
 
-                    if (response.StatusCode == 0)
+                    if (response.StatusCode >= 0)
                     {
                         IResponseType responseType = response.Type;
 
-                        IItemInventoryRetList itemInventoryList = (IItemInventoryRetList)response.Detail;
-
-                        for (int i = 0; i < itemInventoryList.Count; i++)
+                        IORItemRetList itemsList = (IORItemRetList)response.Detail;
+                        //IItemInventorRetList itemInventoryList = (IItemInventoryRetList)response.Detail;
+                        //IItemServiceRet itemsRet = itemsList.GetAt(0).ItemServiceRet;
+                        
+                        for (int i = 0; i < itemsList.Count; i++)
                         {
-                            IItemInventoryRet itemInventoryRet = itemInventoryList.GetAt(i);
-                            //int sublevelVal = itemInventoryRet.Sublevel.GetValue();
-                            string item = itemInventoryRet.FullName.GetValue();
-                            string itemDesc = itemInventoryRet.SalesDesc != null ? itemInventoryRet.SalesDesc.GetValue() : "";
-                            int quantity = (int)itemInventoryRet.QuantityOnHand.GetValue();
+                            
+                            if(itemsList.GetAt(i).ItemServiceRet != null)
+                            {
+                                IItemServiceRet itemService = itemsList.GetAt(i).ItemServiceRet;
+                                string item = itemService.FullName.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            if (itemsList.GetAt(i).ItemNonInventoryRet != null)
+                            {
+                                IItemNonInventoryRet itemService = itemsList.GetAt(i).ItemNonInventoryRet;
+                                string item = itemService.FullName.GetValue();
+                                string itemDesc = "Test";
 
-                            if(!item.Contains(':'))
-                            {
-                                SubItems = new List<object>();
-                                InventoryItems.Add(new Models.Item(item, itemDesc, quantity, SubItems));
-                            } 
-                            else
-                            {
-                                string[] inventory = item.Split(':');
-                                string itemName = inventory[0];
-                                string subItem = inventory[1];
-                               
-                                if (InventoryItems.Count > 0)
+                                if (!item.Contains(':'))
                                 {
-                                    foreach (var x in InventoryItems)
+                                    SubItems = new List<object>();
+                                    AllItemsList.Add(new Models.Item(item, itemDesc, SubItems));
+                                }
+                                else
+                                {
+                                    string[] inventory = item.Split(':');
+                                    string itemName = inventory[0];
+                                    string subItem = inventory[1];
+
+                                    if (AllItemsList.Count > 0)
                                     {
-                                        if (x.Name.Equals(itemName))
+                                        foreach (var x in AllItemsList)
                                         {
-                                            SubItems.Add(new { subItem, itemDesc, quantity });
+                                            if (x.Name.Equals(itemName))
+                                            {
+
+                                                SubItems.Add(new { name = subItem, description = itemDesc });
+                                            }
                                         }
                                     }
                                 }
-
-
                             }
+                            if (itemsList.GetAt(i).ItemOtherChargeRet != null)
+                            {
+                                IItemOtherChargeRet itemService = itemsList.GetAt(i).ItemOtherChargeRet;
+                                string item = itemService.FullName.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            if (itemsList.GetAt(i).ItemInventoryRet != null)
+                            {
+                                IItemInventoryRet itemService = itemsList.GetAt(i).ItemInventoryRet;
+                                string item = itemService.FullName.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            if (itemsList.GetAt(i).ItemInventoryAssemblyRet != null)
+                            {
+                                IItemInventoryAssemblyRet itemService = itemsList.GetAt(i).ItemInventoryAssemblyRet;
+                                string item = itemService.FullName.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            if (itemsList.GetAt(i).ItemFixedAssetRet != null)
+                            {
+                                IItemFixedAssetRet itemService = itemsList.GetAt(i).ItemFixedAssetRet;
+                                string item = itemService.ClassRef.FullName.GetValue();
+                                string item2 = itemService.AssetAccountRef.FullName.GetValue();
+                                string itemDesc = item;
+                                ItemCategory(item, itemDesc);
+                            }
+                            if (itemsList.GetAt(i).ItemSubtotalRet != null)
+                            {
+                                IItemSubtotalRet itemService = itemsList.GetAt(i).ItemSubtotalRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            if (itemsList.GetAt(i).ItemDiscountRet != null)
+                            {
+                                IItemDiscountRet itemService = itemsList.GetAt(i).ItemDiscountRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            //if (itemsList.GetAt(i).ItemDiscountRet != null)
+                            //{
+                            //    IItemDiscountRet itemService = itemsList.GetAt(i).ItemDiscountRet;
+                            //    string item = itemService.FullName.GetValue();
+                            //    string itemDesc = itemService.ItemDesc.GetValue();
+                            //    ItemCategory(item, itemDesc);
+                            //}
+
+                            if (itemsList.GetAt(i).ItemPaymentRet != null)
+                            {
+                                IItemPaymentRet itemService = itemsList.GetAt(i).ItemPaymentRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+
+                            if (itemsList.GetAt(i).ItemSalesTaxRet != null)
+                            {
+                                IItemSalesTaxRet itemService = itemsList.GetAt(i).ItemSalesTaxRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+
+                            if (itemsList.GetAt(i).ItemSalesTaxRet != null)
+                            {
+                                IItemSalesTaxRet itemService = itemsList.GetAt(i).ItemSalesTaxRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+
+                            if (itemsList.GetAt(i).ItemSalesTaxGroupRet != null)
+                            {
+                                IItemSalesTaxGroupRet itemService = itemsList.GetAt(i).ItemSalesTaxGroupRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+
+                            if (itemsList.GetAt(i).ItemGroupRet != null)
+                            {
+                                IItemGroupRet itemService = itemsList.GetAt(i).ItemGroupRet;
+                                string item = itemService.Name.GetValue();
+                                string itemDesc = "Test";
+                                ItemCategory(item, itemDesc);
+                            }
+                            //string itemDesc = oRSalesPurchase.SalesAndPurchase.SalesDesc != null ? itemService.ORSalesPurchase.SalesAndPurchase.SalesDesc.GetValue() : "";
+                            //int quantity = (int)itemsRet.QuantityOnHand.GetValue();
+
+
                         }
                     }
                 }
@@ -95,7 +199,35 @@ namespace MvcCodeFlowClientManual.Services
                 }
             }
            
-            return (InventoryItems);
+            return (AllItemsList);
+        }
+
+        public void ItemCategory(string item, string itemDesc)
+        {
+
+            if (!item.Contains(':'))
+            {
+                SubItems = new List<object>();
+                AllItemsList.Add(new Models.Item(item, itemDesc, SubItems));
+            }
+            else
+            {
+                string[] inventory = item.Split(':');
+                string itemName = inventory[0];
+                string subItem = inventory[1];
+
+                if (AllItemsList.Count > 0)
+                {
+                    foreach (var x in AllItemsList)
+                    {
+                        if (x.Name.Equals(itemName))
+                        {
+
+                            SubItems.Add(new { name = subItem, description = itemDesc });
+                        }
+                    }
+                }
+            }
         }
     }
 }

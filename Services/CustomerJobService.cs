@@ -14,7 +14,7 @@ namespace MvcCodeFlowClientManual.Services
         private QBSessionManager sessionManager;
 
         public IList<CustomerJob> CustomerJobs = new List<CustomerJob>();
-
+        
         List<string> locations = new List<string>();
 
         public IList<CustomerJob> GetCustomerJobs()
@@ -41,21 +41,20 @@ namespace MvcCodeFlowClientManual.Services
                         IResponseType responseType = response.Type;
 
                         ICustomerRetList customerQueryList = (ICustomerRetList)response.Detail;
-
+                       
                         string prevCustomer = string.Empty;
                        
                         for (int i = 0; i < customerQueryList.Count; i++)
                         {
                             string customer = customerQueryList.GetAt(i).FullName.GetValue();
+                            string listId = customerQueryList.GetAt(i).ListID.GetValue();
 
-                            //string currentCustomer = customer;
-                            
-                            if(prevCustomer == "" && !customer.Contains(':'))
+                            if (prevCustomer == "" && !customer.Contains(':'))
                             {
                                 prevCustomer = customer;
                             }
 
-                            if(customer.Contains(':'))
+                            if(customer.Contains(':')) 
                             {
                                 string[] customerJob = customer.Split(':');
                                 string customerName = customerJob[0];
@@ -72,7 +71,8 @@ namespace MvcCodeFlowClientManual.Services
                                     string customer2 = customerQueryList.GetAt(i + 1).FullName.GetValue();
                                     if (!customer2.Contains(':'))
                                     {
-                                       CustomerJobs.Add(new CustomerJob(customerName, locations));
+                                      
+                                        CustomerJobs.Add(new CustomerJob(customerName, listId, locations));
                                         locations = new List<string>();
                                         prevCustomer = customer2;
 
