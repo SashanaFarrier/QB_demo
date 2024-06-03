@@ -1,11 +1,11 @@
-﻿@using MvcCodeFlowClientManual.Services
+﻿@using MvcCodeFlowClientManual.Models
 
-@model ItemService
+@model List<Item>
 
 @{
     ViewBag.Title = "Item Page";
-    var items = new ItemService().GetItems();
-    //var sortedItems = items.OrderBy(item => item).ToList();
+    //var items = new List<Item>();
+    
 }
 
 <div class="jumbotron">
@@ -18,24 +18,35 @@
 
         @using (Html.BeginForm("GetItems", "Item", FormMethod.Get))
         {
-
-            <div><input type="submit" name="submitButton" value="Connect to QuickBooks" /></div>
+            
+            <div>
+            <input type="submit" name="submitButton" value="Connect to QuickBooks" />
             <ul>
-                @foreach (var item in items)
+                @if (Model != null && Model != null)
                 {
-                    <li>
-                        @item.Name - @item.Description
-                    @*<ul>
+                    //var sortedItems = Model.OrderBy(item => item.Name).ToList();
+                    foreach (var item in Model)
+                    {
+
+
+                        <li>
+                            @item.Name
+                            @*<ul>
                         @foreach (var sub in item.SubItems)
                         {
                             <li>@sub.name</li>
                         }
                     </ul>*@
 
-                    
-                </li>
-            }
+
+                        </li>
+                    }
+                }
+
             </ul>
+            
+            </div>
+            
         }
 
 

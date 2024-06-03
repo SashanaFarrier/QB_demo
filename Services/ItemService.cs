@@ -63,7 +63,7 @@ namespace MvcCodeFlowClientManual.Services
                             {
                                 IItemServiceRet itemService = itemsList.GetAt(i).ItemServiceRet;
                                 string item = itemService.FullName.GetValue();
-                                string itemDesc = "Test";
+                                string itemDesc = item;
                                 ItemCategory(item, itemDesc);
                             }
                             if (itemsList.GetAt(i).ItemNonInventoryRet != null)
@@ -120,8 +120,8 @@ namespace MvcCodeFlowClientManual.Services
                             if (itemsList.GetAt(i).ItemFixedAssetRet != null)
                             {
                                 IItemFixedAssetRet itemService = itemsList.GetAt(i).ItemFixedAssetRet;
-                                string item = itemService.ClassRef.FullName.GetValue();
-                                string item2 = itemService.AssetAccountRef.FullName.GetValue();
+                                //string item = itemService.ClassRef.FullName.GetValue() ?? "";
+                                string item = itemService.AssetAccountRef.FullName.GetValue();
                                 string itemDesc = item;
                                 ItemCategory(item, itemDesc);
                             }

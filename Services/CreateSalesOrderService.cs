@@ -17,7 +17,7 @@ namespace MvcCodeFlowClientManual.Services
         private bool sessionBegun = false;
         private bool connectionOpen = false;
         private QBSessionManager sessionManager;
-        public void CreateSalesOrder()
+        public async void  CreateSalesOrder()
         {
                 if (qBConnection.getSessionManager() != null)
                 {
@@ -31,7 +31,7 @@ namespace MvcCodeFlowClientManual.Services
                         string listID = string.Empty;
                         ISalesOrderAdd salesOrderAddRq = requestMsgSet.AppendSalesOrderAddRq();
 
-                        var getCustomers =  customerJob.GetCustomerJobs();
+                        var getCustomers =  await customerJob.GetCustomerJobs();
                     
                         //var getCustomer = new List<Customer>()
                         foreach (var c in getCustomers)

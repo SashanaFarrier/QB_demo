@@ -4,6 +4,7 @@ using QBFC15Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace MvcCodeFlowClientManual.Services
@@ -17,7 +18,7 @@ namespace MvcCodeFlowClientManual.Services
         
         List<string> locations = new List<string>();
 
-        public IList<CustomerJob> GetCustomerJobs()
+        public async Task<IList<CustomerJob>> GetCustomerJobs()
         {
 
             if (qBConnection.getSessionManager() != null)

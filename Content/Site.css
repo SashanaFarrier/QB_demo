@@ -10,10 +10,17 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input,
+/*input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 400px;
+}*/
+
+select {
+    width: 100%;
+    max-width: 400px;
+    padding: .5em;
+    border-radius: .25em;
 }
 
 /* styles for validation helpers */

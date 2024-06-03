@@ -14,11 +14,18 @@ namespace MvcCodeFlowClientManual.Controllers
     public class ItemController : Controller
     {
         ItemService ItemService = new ItemService();
-        //ItemsViewModel ItemsViewModel { get; set; }
+        //public List<Item> Items = new List<Item>();
+        //ItemsViewModel ItemsViewModel = new ItemsViewModel();
         public ActionResult Index()
         {
-            //var items = GetItems();
+            //if(Items != null)
+            //{
+            //    //var items = Items.ToList();
+            //    return View(Items);
+            //}
+
             return View();
+            
         }
         
         public Item GetItemByName(string name)
@@ -29,15 +36,22 @@ namespace MvcCodeFlowClientManual.Controllers
         {
             return null;
         }
-        public IList<Item> GetItems()
+        public ActionResult GetItems(string submitButton)
         {
-            var items = ItemService.GetItems();
-            ItemsViewModel viewModel = new ItemsViewModel();
-            //foreach (var item in items)
-            //{
-            //    viewModel.Items.Add(item);
-            //}
-            return (items); 
+            var viewModel = new List<Item>();
+            
+            switch(submitButton)
+            {
+                case "Connect to QuickBooks":
+                    foreach(var i in ItemService.GetItems()) 
+                    {
+                        viewModel.Add(i);
+                    }
+                    //submitButton = "Close QuickBooks";
+                    break;
+            }
+
+            return View("Index",viewModel); 
         }
 
         [HttpPost]

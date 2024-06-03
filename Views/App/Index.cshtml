@@ -1,21 +1,106 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Home Page";
+
+
 }
 
 <div class="jumbotron">
-    <h1>QuickBooks Demo sample application using QBFC</h1>
-    <h2>Get customer names</h2>
+    <h1>QuickBooks Sales Order</h1>
+    <h2>Create your order</h2>
 </div>
 
-<div class="row">
+<div class="row flex-column">
     <div class="col-md-8">
-        @*@using (Html.BeginForm("/Item/GetItem", "Item", FormMethod.Post))
-        {
+        <div class="row justify-content-between">
+            <form>
 
-            <div><input type="submit" name="submitButton" value="Connect to QuickBooks"/></div>
-            <br/>
-          
-            <br/>
-        }*@
+                <div class="col mb-3">
+                    <label for="customerId" class="form-label">Customer ID</label>
+                    <input type="text" class="form-control" id="customerId" placeholder="12345398">
+                </div>
+            </form>
+
+            <form>
+                <div class="col mb-3">
+                    <label for="date" class="form-label">Transaction Date</label>
+                    <input type="date" class="form-control" id="date">
+                </div>
+            </form>
+        </div>
+        <form method="get" action="/Customer/GetCustomerJobs">
+            <div id="customerJobsList" class="col mb-3 p-0">
+                <label for="customer" class="form-label d-block">Customer</label>
+
+                @*<button id="dropdown">Customers</button>*@
+
+                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option selected value="Select">Select</option>
+
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col">
+        <div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+            <!-- Button trigger modal -->
+            @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Launch static backdrop modal
+            </button>*@
+
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
+
+<script>
+    document.querySelector("select").addEventListener("click", function (e) {
+        e.preventDefault();
+        let selectedCustomer = this.value;
+        fetch(`/Customer/GetCustomerJobs`)
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data[0])
+
+                const jobsListContainer = document.getElementById("customerJobsList");
+
+                if (data.length > 0) {
+                    const customerJobs = data.map(job => `<option>${job.Name}</option>`);
+                    jobsListContainer.querySelector(".form-select").innerHTML = customerJobs.join("")
+                } else {
+                    jobsListContainer.innerHTML = "<p>No jobs found.</p>";
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching jobs:", error);
+
+            });
+    });
+
+    //add item modal
+    const myModal = document.getElementById('staticBackdrop')
+    const myInput = document.getElementById('myInput')
+    console.log(myModal)
+    myModal.addEventListener('shown.bs.modal', () => {
+        myInput.focus()
+       
+    })
+</script>

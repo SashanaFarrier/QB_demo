@@ -9,6 +9,14 @@ namespace MvcCodeFlowClientManual.ViewModels
     public class ItemsViewModel
     {
 
+            public ItemsViewModel()
+            {
+                Items = new List<Item>(); 
+            }
+
             public List<Item> Items { get; set; }
+      
+
+        //public List<Item> Items { get; set; }
     }
 }
