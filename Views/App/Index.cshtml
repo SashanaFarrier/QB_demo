@@ -1,4 +1,5 @@
-﻿
+﻿@using MvcCodeFlowClientManual.Models
+@model List<Item>
 @{
     ViewBag.Title = "Home Page";
 
@@ -34,7 +35,7 @@
 
                 @*<button id="dropdown">Customers</button>*@
 
-                <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                <select class="form-select mb-3" aria-label="customer jobs list">
                     <option selected value="Select">Select</option>
 
                 </select>
@@ -43,64 +44,131 @@
     </div>
     <div class="col">
         <div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+            <button id="modal-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
             <!-- Button trigger modal -->
             @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                Launch static backdrop modal
-            </button>*@
+                    Launch static backdrop modal
+                </button>*@
 
             <!-- Modal -->
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Understood</button>
+                <form method="post" action="@Url.Action("CreateItem", "Item")">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="col mb-3">
+                                    <label for="item" class="form-label">Item</label>
+                                    <input name="Name" type="text" class="form-control" id="item">
+                                </div>
+                                <div class="col mb-3">
+                                    <label for="desc" class="form-label">Description</label>
+                                    <input name="Description" type="text" class="form-control" id="desc">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
+            </div>
+
+            <div id="itemsContainer">
+                <form class="border border-dark mt-5 p-3">
+                    <div class="row">
+                        <div id="item-col" class="col">
+                            <label class="font-weight-bold">Item</label>
+                        </div>
+                        <div id="desc-col" class="col">
+                            <label class="font-weight-bold">Description</label>
+                        </div>
+                        <div id="qty-col" class="col">
+                            <label class="font-weight-bold">Quantity</label>
+                        </div>
+                        <div id="amount-col" class="col">
+                            <label class="font-weight-bold">Amount</label>
+                        </div>
+                        <div id="rate-col" class="col">
+                            <label class="font-weight-bold">Rate</label>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    document.querySelector("select").addEventListener("click", function (e) {
-        e.preventDefault();
-        let selectedCustomer = this.value;
-        fetch(`/Customer/GetCustomerJobs`)
-            .then(response => response.json())
-            .then(data => {
-                //console.log(data[0])
+    async function getCustomerJobs(jobsListContainer) {
+        try {
+            const fetchUrl = fetch("/Customer/GetCustomerJobs");
+            const response = await fetchUrl;
+            const result = await response.json();
 
-                const jobsListContainer = document.getElementById("customerJobsList");
+            if (result.length > 0) {
+                const customerJobs = result.map(job => `<option>${job.Name}</option>`);
 
-                if (data.length > 0) {
-                    const customerJobs = data.map(job => `<option>${job.Name}</option>`);
-                    jobsListContainer.querySelector(".form-select").innerHTML = customerJobs.join("")
-                } else {
-                    jobsListContainer.innerHTML = "<p>No jobs found.</p>";
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching jobs:", error);
-
-            });
-    });
-
-    //add item modal
-    const myModal = document.getElementById('staticBackdrop')
-    const myInput = document.getElementById('myInput')
-    console.log(myModal)
-    myModal.addEventListener('shown.bs.modal', () => {
-        myInput.focus()
+                jobsListContainer.querySelector(".form-select").innerHTML += customerJobs.join("")
+            } else {
+                jobsListContainer.innerHTML = `<p>There are no customer jobs. Add new customer jobs to your QuickBooks company file and then try again</p>`
+            }
+        }
+        catch (error) {
+            jobsListContainer.innerHTML = `<p>Error fecting customer jobs. Please try again.</p>`
+            console.log("Error fetching customer jobs: ", error);
+        }
+        return jobsListContainer;
+    }
+    const itemCol = document.getElementById("item-col");
+    const descCol = document.getElementById("desc-col");
+    const qtyCol = document.getElementById("qty-col");
+    const amtCol = document.getElementById("amount-col");
+    const rateCol = document.getElementById("rate-col");
+    async function getItems(itemsContainer) {
        
-    })
+        try {
+            const fetchUrl = fetch("/Item/GetItems");
+            const response = await fetchUrl;
+            const result = await response.json();
+            console.log(result)
+            if (result.length > 0) {
+                
+                const arr = [itemCol, descCol, qtyCol, amtCol, rateCol]
+                const items = result.map(item => {
+                    arr[0].innerHTML += `<p>${item.Name}</p>`
+                    arr[1].innerHTML += `<p>${item.Description}</p>`
+                });
+
+            } else {
+                itemsContainer.innerHTML = `<p>No items added</p>`
+            }
+        }
+        catch (error) {
+            itemsContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
+            console.log("Error fetching items: ", error);
+        }
+
+        return itemsContainer;
+    }
+    function modalToggle() {
+        $("#modal-btn").click(function () {
+            $("#staticBackdrop").modal()
+        });
+    }
+
+    $(document).ready(function () {
+        const jobsListContainer = document.getElementById("customerJobsList");
+        const itemsContainer = document.getElementById("itemsContainer");
+        //modal to add new item
+        modalToggle();
+        getCustomerJobs(jobsListContainer);
+        getItems(itemsContainer);
+
+    });
 </script>

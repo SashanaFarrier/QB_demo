@@ -14,10 +14,10 @@ namespace MvcCodeFlowClientManual.Models
         public string Description { get; set; }
         //public int Quantity { get; set; }
 
-        public Item(string name, string desc, List<object> items)
+        public Item(string id, string name, string desc, List<object> items)
         {
             
-            //this.ItemId = id;
+            this.ItemId = id;
             this.Name = name;
             this.SubItems = items;
             this.Description = desc;

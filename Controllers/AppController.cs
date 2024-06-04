@@ -18,11 +18,7 @@ namespace MvcCodeFlowClientManual.Controllers
         public QBConnection qBConnection = new QBConnection();
 
         private QBSessionManager sessionManager;
-
-        public ActionResult Index()
-        {
-            return View();
-        }
+        
         public IList<Customer> ApiCallService()
         {
             if (qBConnection.getSessionManager() != null)
@@ -72,6 +68,10 @@ namespace MvcCodeFlowClientManual.Controllers
             return customers;
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
         public ActionResult Error()
         {
             return View("Error");

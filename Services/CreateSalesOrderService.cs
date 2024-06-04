@@ -17,7 +17,7 @@ namespace MvcCodeFlowClientManual.Services
         private bool sessionBegun = false;
         private bool connectionOpen = false;
         private QBSessionManager sessionManager;
-        public async void  CreateSalesOrder()
+        public async void CreateSalesOrder()
         {
                 if (qBConnection.getSessionManager() != null)
                 {
