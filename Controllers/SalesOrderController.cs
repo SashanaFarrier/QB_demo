@@ -62,8 +62,6 @@ namespace MvcCodeFlowClientManual.Controllers
             return View("~/Views/App/Index.cshtml", Orders);
             //return RedirectToAction("Index", "App");
         }
-
-        
         public JsonResult GetItemOrderById(string id)
         {
             var item = Orders.Find(i => i.OrderId.ToString() == id);
@@ -72,9 +70,26 @@ namespace MvcCodeFlowClientManual.Controllers
             
         }
 
+        
+        public ActionResult EditOrder(string id)
+        {
+            if(id == null)
+            {
+                return PartialView("~/Views/Shared/_AddItemModal.cshtml");
+            }
+
+            var item = Orders.Find(x => x.OrderId.ToString() == id);
+
+            if(item == null)
+            {
+                return PartialView("~/Views/Shared/_AddItemModal.cshtml");
+            }
+
+            return PartialView("~/Views/Shared/_AddItemModal.cshtml", item);
+        }
 
         [HttpPost]
-        public ActionResult UpdateItemOrder(Order item)
+        public ActionResult UpdateOrder(Order item)
         {
             var prevOrder = Orders.Find(i => i.OrderId == item.OrderId);
             

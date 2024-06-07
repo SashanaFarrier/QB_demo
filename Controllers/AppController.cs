@@ -77,6 +77,13 @@ namespace MvcCodeFlowClientManual.Controllers
             return View("Error");
         }
 
+        [HttpPost]
+        public ActionResult ClearOrders()
+        {
+            List<Order> orders = new List<Order>();
+            return View("Index", orders);
+        }
+
     }
 
 }

@@ -4,8 +4,6 @@
 @{
     ViewBag.Title = "Home Page";
 
-    //ItemService itemService = new ItemService();
-    //var items = itemService.GetItems();
 }
 
 <div class="jumbotron">
@@ -13,6 +11,7 @@
     <h2>Create your order</h2>
 </div>
 
+@*<p class="font-weight-bold text-uppercase mt-4">Start a new transaction</p>*@
 <div class="row flex-column | transactionContainer">
     <div class="col">
         <div class="row justify-content-between">
@@ -34,144 +33,134 @@
             <div id="customerJobsList" class="col mb-3 p-0">
                 <label for="customer" class="form-label d-block">Customer</label>
 
-                @*<button id="dropdown">Customers</button>*@
-
                 <select class="form-select mb-3 customer-list" aria-label="customer jobs list">
                     <option selected value="Select">Select</option>
-
                 </select>
             </div>
         </form>
     </div>
     <div class="col">
-        <div>
-            <form method="get" action="@Url.Action("GetItems", "Item")">
-                <button type="button" id="modal-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
-            </form>
-            <!-- Button trigger modal -->
-            @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    Launch static backdrop modal
-                </button>*@
-
+        <div class="transactions">
+            <div class="row justify-content-between">
+                <div class="col-10">
+                    <form method="get" action="@Url.Action("GetItems", "Item")">
+                        <button type="button" id="modal-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <form method="post" action="@Url.Action("Index", "App")">
+                        <button class="btn btn-danger">Clear All</button>
+                    </form>
+                </div>
+            </div>
             <!-- Modal -->
 
             @Html.Partial("_AddItemModal")
 
             <div id="salesOrderContainer">
+                @if (Model != null)
+            {
                 <div class="row border border-dark mt-5 py-3 | order-details">
 
                     <div id="item-col" class="col-2">
                         <label class="font-weight-bold">Item</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                    <p>@order.ItemName</p>
-                                }
-                            }
+
+
+                        @foreach (var order in Model)
+                        {
+                            <p>@order.ItemName</p>
                         }
+
+
 
                     </div>
                     <div id="number-col" class="col-2">
                         <label class="font-weight-bold">Item No.</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                    <p>@order.ItemNumber</p>
-                                }
-                            }
+
+
+                        @foreach (var order in Model)
+                        {
+                            <p>@order.ItemNumber</p>
                         }
+
+
 
                     </div>
                     <div id="desc-col" class="col-2">
                         <label class="font-weight-bold">Description</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                    <p>@order.Description</p>
-                                }
-                            }
+
+
+                        @foreach (var order in Model)
+                        {
+                            <p>@order.Description</p>
                         }
+
+
 
                     </div>
                     <div id="qty-col" class="col">
                         <label class="font-weight-bold">Quantity</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                    <p>@order.Quantity</p>
-                                }
-                            }
+
+                        @foreach (var order in Model)
+                        {
+                            <p>@order.Quantity</p>
                         }
+
 
                     </div>
                     <div id="amount-col" class="col">
                         <label class="font-weight-bold">Amount</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                    <p>@order.Amount</p>
-                                }
-                            }
-                        }
 
+                        @foreach (var order in Model)
+                        {
+                            <p>@order.Amount</p>
+                        }
                     </div>
                     <div id="rate-col" class="col">
                         <label class="font-weight-bold">Rate</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                    <p>@order.Rate</p>
-                                }
-                            }
+
+                        @foreach (var order in Model)
+                        {
+                            <p>@order.Rate</p>
                         }
 
                     </div>
                     <div id="actions-col" class="col">
                         <label class="font-weight-bold d-block">Actions</label>
-                        @{
-                            if (Model != null)
-                            {
-                                foreach (var order in Model)
-                                {
-                                        
-                                        <button type="button" class="edit-btn" data-id="@order.OrderId">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </button>
-                             
-                                    @*<form method="get" action="@Url.Action("GetItemOrderById", "SalesOrder")" asp-route-id="@Model.ElementAt(0).ItemNumber">
-                                            <button type="submit" class="edit-btn">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                            <button type="button" class="delete-btn">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>*@
-                                }
-                            }
-                        }
 
+                        @foreach (var order in Model)
+                        {
+                            <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+
+                            @*<a onclick="showInPopup('@Url.Action("EditOrder", "SalesOrder", order.OrderId)')" class="edit-btn" data-id="@order.OrderId">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>*@
+
+                            @*<form method="get" action="@Url.Action("GetItemOrderById", "SalesOrder")" asp-route-id="@Model.ElementAt(0).ItemNumber">
+                            <button type="submit" class="edit-btn">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="delete-btn">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>*@
+                        }
                     </div>
                 </div>
-                <form>
-                    <button class="btn btn-primary mt-3">Submit Order</button>
-                </form>
+            }
+
+                @if (Model != null)
+                {
+                    <form>
+                        <button class="btn btn-primary mt-3">Submit Order</button>
+                    </form>
+                }
             </div>
         </div>
     </div>
 </div>
-
 <script>
     const itemCol = document.getElementById("item-col");
     const numCol = document.getElementById("number-col");
@@ -181,8 +170,6 @@
     const rateCol = document.getElementById("rate-col");
     //const taxCol = document.getElementById("tax-col");
     const actionsCol = document.getElementById("actions-col");
-
-    const salesOrders = []
 
     async function getCustomerJobs(jobsListContainer) {
         try {
@@ -271,113 +258,81 @@
         return result;
     }
 
-    //const response = await fetch(`/SalesOrder/GetItemOrderById?id=${orderId}`);
-    async function getItemById(itemId) {
+    async function editSalesOrderItem(orderId) {
+
         try {
-            const response = await fetch(`/SalesOrder/GetItemOrderById/${itemId}`);
+            const response = await fetch(`/SalesOrder/GetItemOrderById/${orderId}`);
 
             if (!response.ok) {
                 throw new Error(`Error fetching item: ${response.statusText}`);
             }
 
             const result = await response.json();
-            return result;
+            console.log(result)
+
+            if (result != null) {
+                const itemOrder = await result;
+                updateModalContent(itemOrder);
+            }
+
+            //return result;
         } catch (error) {
             console.error('Error fetching item:', error);
-            
+
             alert('An error occurred while retrieving item details. Please try again later.');
         }
     }
 
+    function updateModalContent(itemOrder) {
+      const modalContent = $("#staticBackdrop .modal-content");
+      modalContent.empty();
+      const form = `
+                    <form method="post" action="@Url.Action("UpdateOrder", "SalesOrder")">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Edit order info</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+              </div>
+              <div class="modal-body">
+                  <div class="col mb-3">
+                      <label for="item" class="form-label">Item</label>
+                      <div id="itemsContainer">
+                          <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
+                              <option selected>${itemOrder.ItemName}</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col mb-3">
+                      <label for="desc" class="form-label">Description</label>
+                      <input name="Description" type="text" class="form-control" id="desc" value=${itemOrder.Description} />
+                  </div>
+                  <div class="col mb-3">
+                      <label for="qty" class="form-label">Quantity</label>
+                      <input name="Quantity" type="text" class="form-control" id="qty" value=${itemOrder.Quantity} />
+                  </div>
+                  <div class="col mb-3">
+                      <label for="amt" class="form-label">Amount</label>
+                      <input name="Amount" type="text" class="form-control" id="amt" value=${itemOrder.Amount} />
+                  </div>
+                  <div class="col mb-3">
+                      <label for="rate" class="form-label">Rate</label>
+                      <input name="Rate" type="text" class="form-control" id="rate" value=${itemOrder.Rate} />
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Update</button>
+              </div>
+          </form>
+`;
+      modalContent.append(form);
+      $("#staticBackdrop").modal('show');
+  }
+
+
    function modalToggle() {
-  $("#modal-btn").click(function () {
-    $("#staticBackdrop").modal('show'); // Use jQuery's modal('show') for proper modal behavior
-  });
-
-  $(".edit-btn").click(async function (e) {
-    e.preventDefault();
-     const itemId = e.target.parentElement.getAttribute("data-id"); 
-
-      try {
-         const item = await getItemById(itemId);
-        console.log(item)
-        //if (item != undefined) {
-        //    $.ajax({
-        //        type: 'POST',
-        //        url: '/SalesOrder/UpdateItemOrder',
-        //        data: JSON.stringify({ item: item }),
-        //        contentType: 'application/json; charset=utf-8',
-        //        dataType: 'json',
-        //        success: function (data) {
-
-        //            return data
-
-        //        },
-        //        error: function (error) {
-        //            console.log(error);
-        //        }
-        //    });
-        //}
-        updateModalContent(item); 
-
-    } catch (error) {
-      console.error('Error fetching item:', error);
-
-      alert('An error occurred while retrieving item details. Please try again later.');
-    }
-  });
-    }
-
-    function updateModalContent(item) {
-        const modalContent = $("#staticBackdrop .modal-content");
-
-        // Clear any existing content in the modal body
-        modalContent.empty();
-
-        // Build the modal content dynamically using item data
-        const form = `
-      
-                      <form method="post" action="@Url.Action("UpdateItemOrder", "SalesOrder")">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
-                </div>
-                <div class="modal-body">
-                    <div class="col mb-3">
-                        <label for="item" class="form-label">Item</label>
-                        <div id="itemsContainer">
-                            <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
-                                <option selected>${item.ItemName}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col mb-3">
-                        <label for="desc" class="form-label">Description</label>
-                        <input name="Description" type="text" class="form-control" id="desc" value=${item.Description} />
-                    </div>
-                    <div class="col mb-3">
-                        <label for="qty" class="form-label">Quantity</label>
-                        <input name="Quantity" type="text" class="form-control" id="qty" value=${item.Quantity} />
-                    </div>
-                    <div class="col mb-3">
-                        <label for="amt" class="form-label">Amount</label>
-                        <input name="Amount" type="text" class="form-control" id="amt" value=${item.Amount} />
-                    </div>
-                    <div class="col mb-3">
-                        <label for="rate" class="form-label">Rate</label>
-                        <input name="Rate" type="text" class="form-control" id="rate" value=${item.Rate} />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-  `;
-
-        modalContent.append(form);
-        $("#staticBackdrop").modal('show');
-    }
+      $("#modal-btn").click(function () {
+        $("#staticBackdrop").modal('show'); 
+      });
+   }
 
     $(document).ready(function () {
         const jobsListContainer = document.getElementById("customerJobsList");
@@ -385,12 +340,12 @@
         const salesOrderContainer = document.getElementById("salesOrderContainer");
         salesOrderContainer.classList.add("hidden")
         const editBtn = document.querySelector(".edit-btn")
-        
+
         //modal to add new item
         modalToggle();
         getCustomerJobs(jobsListContainer);
         getItems(itemsContainer);
-       
+
         //CreateSalesOrder(salesOrderContainer);
         //CreateSalesOrder().then(result => {
         //    if (result.length > 0) {
