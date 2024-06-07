@@ -59,57 +59,47 @@
 
             <div id="salesOrderContainer">
                 @if (Model != null)
-            {
+                {
                 <div class="row border border-dark mt-5 py-3 | order-details">
 
                     <div id="item-col" class="col-2">
-                        <label class="font-weight-bold">Item</label>
-
+                        <p class="font-weight-bold">Item</p>
 
                         @foreach (var order in Model)
                         {
                             <p>@order.ItemName</p>
                         }
 
-
-
                     </div>
-                    <div id="number-col" class="col-2">
-                        <label class="font-weight-bold">Item No.</label>
-
+                    @*<div id="number-col" class="col-2">
+                        <p class="font-weight-bold">Item No.</p>
 
                         @foreach (var order in Model)
                         {
                             <p>@order.ItemNumber</p>
                         }
 
-
-
-                    </div>
+                    </div>*@
                     <div id="desc-col" class="col-2">
-                        <label class="font-weight-bold">Description</label>
-
+                        <p class="font-weight-bold">Description</p>
 
                         @foreach (var order in Model)
                         {
                             <p>@order.Description</p>
                         }
 
-
-
                     </div>
                     <div id="qty-col" class="col">
-                        <label class="font-weight-bold">Quantity</label>
+                        <p class="font-weight-bold">Quantity</p>
 
                         @foreach (var order in Model)
                         {
                             <p>@order.Quantity</p>
                         }
 
-
                     </div>
                     <div id="amount-col" class="col">
-                        <label class="font-weight-bold">Amount</label>
+                        <p class="font-weight-bold">Amount</p>
 
                         @foreach (var order in Model)
                         {
@@ -117,7 +107,7 @@
                         }
                     </div>
                     <div id="rate-col" class="col">
-                        <label class="font-weight-bold">Rate</label>
+                        <p class="font-weight-bold">Rate</p>
 
                         @foreach (var order in Model)
                         {
@@ -126,26 +116,23 @@
 
                     </div>
                     <div id="actions-col" class="col">
-                        <label class="font-weight-bold d-block">Actions</label>
+                        <p class="font-weight-bold d-block">Actions</p>
 
                         @foreach (var order in Model)
                         {
-                            <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-
+                            <div class="action-btns">
+                                <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a class="delete-btn">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                            
                             @*<a onclick="showInPopup('@Url.Action("EditOrder", "SalesOrder", order.OrderId)')" class="edit-btn" data-id="@order.OrderId">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>*@
 
-                            @*<form method="get" action="@Url.Action("GetItemOrderById", "SalesOrder")" asp-route-id="@Model.ElementAt(0).ItemNumber">
-                            <button type="submit" class="edit-btn">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button type="button" class="delete-btn">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>*@
                         }
                     </div>
                 </div>
@@ -219,9 +206,7 @@
             const fetchUrl = fetch("/SalesOrder/GetSalesOrders");
             const response = await fetchUrl;
             const result = await response.json();
-            if (result.length > 0) {
-                result.map(order => salesOrder.push(order))
-            }
+            //return result;
             //console.log(result)
             //if (result.length > 0) {
             //    const arr = [itemCol, numCol, descCol, qtyCol, amtCol, rateCol, actionsCol];
@@ -255,7 +240,7 @@
             console.log("Error fetching items: ", error);
         }
 
-        return result;
+        
     }
 
     async function editSalesOrderItem(orderId) {
@@ -272,7 +257,7 @@
 
             if (result != null) {
                 const itemOrder = await result;
-                updateModalContent(itemOrder);
+                updateModalContentHTML(itemOrder);
             }
 
             //return result;
@@ -283,12 +268,13 @@
         }
     }
 
-    function updateModalContent(itemOrder) {
-      const modalContent = $("#staticBackdrop .modal-content");
-      modalContent.empty();
-      const form = `
+    function updateModalContentHTML(itemOrder) {
+        const modalContent = $("#staticBackdrop .modal-content");
+        modalContent.empty();
+        const form = `
                     <form method="post" action="@Url.Action("UpdateOrder", "SalesOrder")">
               <div class="modal-header">
+                  <input type="hidden" name="OrderId" value="${itemOrder.OrderId}"/>
                   <h5 class="modal-title" id="staticBackdropLabel">Edit order info</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
               </div>
@@ -323,14 +309,13 @@
               </div>
           </form>
 `;
-      modalContent.append(form);
-      $("#staticBackdrop").modal('show');
+        modalContent.append(form);
+        $("#staticBackdrop").modal('show');
   }
-
 
    function modalToggle() {
       $("#modal-btn").click(function () {
-        $("#staticBackdrop").modal('show'); 
+        $("#staticBackdrop").modal('show');
       });
    }
 
@@ -339,43 +324,12 @@
         const itemsContainer = document.getElementById("itemsContainer");
         const salesOrderContainer = document.getElementById("salesOrderContainer");
         salesOrderContainer.classList.add("hidden")
-        const editBtn = document.querySelector(".edit-btn")
+        //const editBtn = document.querySelector(".edit-btn")
 
         //modal to add new item
         modalToggle();
         getCustomerJobs(jobsListContainer);
         getItems(itemsContainer);
-
-        //CreateSalesOrder(salesOrderContainer);
-        //CreateSalesOrder().then(result => {
-        //    if (result.length > 0) {
-        //        salesOrderContainer.classList.remove("hidden")
-        //        const arr = [itemCol, numCol, descCol, qtyCol, amtCol, rateCol, actionsCol];
-
-        //        result.map(item => {
-        //            arr[0].innerHTML += `<p>${item.ItemName}</p>`
-        //            arr[1].innerHTML += `<p>${item.ItemNumber}</p>`
-        //            arr[2].innerHTML += `<p>${item.Description}</p>`
-        //            arr[3].innerHTML += `<p>${item.Quantity}</p>`
-        //            arr[4].innerHTML += `<p>${item.Amount}</p>`
-        //            arr[5].innerHTML += `<p>${item.Rate}</p>`
-        //            //arr[1].innerHTML += `<p>${item.Tax}</p>`
-        //            arr[6].innerHTML += `
-        //            <div>
-        //                <button type="button" class="edit-btn" id=${item.OrderId} onclick="getId('${item.OrderId}')">
-        //                    <i class="fa-solid fa-pen-to-square"></i>
-        //                </button>
-        //                <button type="button" class="delete-btn">
-        //                     <i class="fa-solid fa-trash"></i>
-        //                </button>
-        //            </div>
-        //            `
-        //        });
-
-        //    } else {
-        //        salesOrderContainer.innerHTML = `<p>No items added</p>`
-        //    }
-        //})
 
     });
 </script>

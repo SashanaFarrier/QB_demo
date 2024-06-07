@@ -8,7 +8,7 @@ namespace MvcCodeFlowClientManual.Models
 {
     public class Order
     {
-        public Guid OrderId { get; set; }
+        public string OrderId { get; set; }
         public DateTime TransactionDate { get; set; }
         public string CustomerJob {  get; set; }
         public string ItemName { get; set; }

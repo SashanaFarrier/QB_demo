@@ -13,38 +13,26 @@ namespace MvcCodeFlowClientManual.Controllers
 {
     public class SalesOrderController : Controller
     {
-        CreateSalesOrderService createSalesOrderService = new CreateSalesOrderService();
         ItemService ItemService = new ItemService();
       
         private static List<Order> Orders = new List<Order>();
         private static List<Order> updatedOrderList = new List<Order>();
-        //public ActionResult Index()
-        //{
-
-
-        //    return View("~/Views/App/Index.cshtml", Orders);
-        //}
-
-        //public JsonResult GetSalesOrders()
-        //{
-        //    return Json(Orders, JsonRequestBehavior.AllowGet);
-        //}
-
+       
         [HttpPost]
         public async Task<ActionResult> CreateSalesOrder(Order item)
         {
-            //var matchItem = ItemService.GetItems().Equals(item.ItemName);
+
             if (ModelState.IsValid)
             {
                 var items = await ItemService.GetItems();
-                var itemFound = items.First(i => i.Name.ToLower() == item.ItemName.ToLower());
+                var itemFound = items.First(i => i.Name == item.ItemName);
 
                 if (itemFound != null)
                 {
 
                     Order newItem = new Order
                     {
-                        OrderId = Guid.NewGuid(),
+                        OrderId = Guid.NewGuid().ToString(),
                         TransactionDate = DateTime.Now,
                         ItemName = itemFound.Name,
                         ItemNumber = itemFound.ItemId,
@@ -78,7 +66,7 @@ namespace MvcCodeFlowClientManual.Controllers
                 return PartialView("~/Views/Shared/_AddItemModal.cshtml");
             }
 
-            var item = Orders.Find(x => x.OrderId.ToString() == id);
+            var item = Orders.Find(x => x.OrderId == id);
 
             if(item == null)
             {
@@ -91,37 +79,43 @@ namespace MvcCodeFlowClientManual.Controllers
         [HttpPost]
         public ActionResult UpdateOrder(Order item)
         {
-            var prevOrder = Orders.Find(i => i.OrderId == item.OrderId);
-            
-            if(prevOrder == null) 
+            if(ModelState.IsValid)
             {
-               return View("~/Views/App/Index.cshtml");
-            }
+                var prevOrder = Orders.Find(i => i.OrderId == item.OrderId);
+                if (prevOrder == null)
+                {
+                    return RedirectToAction("Index", "App");
+                    //return View("~/Views/App/Index.cshtml");
+                }
 
-            Order updatedOrder = new Order();
-            updatedOrder.OrderId = prevOrder.OrderId;
-                updatedOrder.TransactionDate = prevOrder.TransactionDate;   
+                Order updatedOrder = new Order();
+                updatedOrder.OrderId = prevOrder.OrderId;
+                updatedOrder.TransactionDate = prevOrder.TransactionDate;
                 updatedOrder.ItemName = item.ItemName;
                 updatedOrder.ItemNumber = item.ItemNumber;
                 updatedOrder.Description = item.Description;
                 updatedOrder.Quantity = item.Quantity;
                 updatedOrder.Rate = item.Rate;
                 updatedOrder.Amount = item.Amount;
-               
-
-            updatedOrderList.Add(updatedOrder);
 
 
-            foreach (var order in Orders)
-            {
-                if (order.OrderId != prevOrder.OrderId)
+                updatedOrderList.Add(updatedOrder);
+
+                foreach (var order in Orders)
                 {
-                    updatedOrderList.Add(order);
+                    if (order.OrderId != prevOrder.OrderId)
+                    {
+                        updatedOrderList.Add(order);
+                    }
                 }
-            }
-            //Orders = updatedOrderList;
-            return View("~/Views/App/Index.cshtml", updatedOrderList);
 
+                 return View("~/Views/App/Index.cshtml", updatedOrderList);
+
+            }
+
+            //Orders = updatedOrderList;
+            //return View("~/Views/App/Index.cshtml", updatedOrderList);
+            return RedirectToAction("Index", "App");
         }
     }
 }
