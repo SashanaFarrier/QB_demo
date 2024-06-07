@@ -1,9 +1,11 @@
-﻿@using MvcCodeFlowClientManual.Models
-@model List<Item>
+﻿
+@using MvcCodeFlowClientManual.Models
+@model List<Order>
 @{
     ViewBag.Title = "Home Page";
 
-
+    //ItemService itemService = new ItemService();
+    //var items = itemService.GetItems();
 }
 
 <div class="jumbotron">
@@ -11,11 +13,10 @@
     <h2>Create your order</h2>
 </div>
 
-<div class="row flex-column">
-    <div class="col-md-8">
+<div class="row flex-column | transactionContainer">
+    <div class="col">
         <div class="row justify-content-between">
             <form>
-
                 <div class="col mb-3">
                     <label for="customerId" class="form-label">Customer ID</label>
                     <input type="text" class="form-control" id="customerId" placeholder="12345398">
@@ -29,13 +30,13 @@
                 </div>
             </form>
         </div>
-        <form method="get" action="/Customer/GetCustomerJobs">
+        <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
             <div id="customerJobsList" class="col mb-3 p-0">
                 <label for="customer" class="form-label d-block">Customer</label>
 
                 @*<button id="dropdown">Customers</button>*@
 
-                <select class="form-select mb-3" aria-label="customer jobs list">
+                <select class="form-select mb-3 customer-list" aria-label="customer jobs list">
                     <option selected value="Select">Select</option>
 
                 </select>
@@ -44,60 +45,127 @@
     </div>
     <div class="col">
         <div>
-            <button id="modal-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+            <form method="get" action="@Url.Action("GetItems", "Item")">
+                <button type="button" id="modal-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+            </form>
             <!-- Button trigger modal -->
             @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     Launch static backdrop modal
                 </button>*@
 
             <!-- Modal -->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <form method="post" action="@Url.Action("CreateItem", "Item")">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
-                            </div>
-                            <div class="modal-body">
 
-                                <div class="col mb-3">
-                                    <label for="item" class="form-label">Item</label>
-                                    <input name="Name" type="text" class="form-control" id="item">
-                                </div>
-                                <div class="col mb-3">
-                                    <label for="desc" class="form-label">Description</label>
-                                    <input name="Description" type="text" class="form-control" id="desc">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
-                                <button type="submit" class="btn btn-primary">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+            @Html.Partial("_AddItemModal")
 
-            <div id="itemsContainer">
-                <form class="border border-dark mt-5 p-3">
-                    <div class="row">
-                        <div id="item-col" class="col">
-                            <label class="font-weight-bold">Item</label>
-                        </div>
-                        <div id="desc-col" class="col">
-                            <label class="font-weight-bold">Description</label>
-                        </div>
-                        <div id="qty-col" class="col">
-                            <label class="font-weight-bold">Quantity</label>
-                        </div>
-                        <div id="amount-col" class="col">
-                            <label class="font-weight-bold">Amount</label>
-                        </div>
-                        <div id="rate-col" class="col">
-                            <label class="font-weight-bold">Rate</label>
-                        </div>
+            <div id="salesOrderContainer">
+                <div class="row border border-dark mt-5 py-3 | order-details">
+
+                    <div id="item-col" class="col-2">
+                        <label class="font-weight-bold">Item</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                    <p>@order.ItemName</p>
+                                }
+                            }
+                        }
+
                     </div>
+                    <div id="number-col" class="col-2">
+                        <label class="font-weight-bold">Item No.</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                    <p>@order.ItemNumber</p>
+                                }
+                            }
+                        }
+
+                    </div>
+                    <div id="desc-col" class="col-2">
+                        <label class="font-weight-bold">Description</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                    <p>@order.Description</p>
+                                }
+                            }
+                        }
+
+                    </div>
+                    <div id="qty-col" class="col">
+                        <label class="font-weight-bold">Quantity</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                    <p>@order.Quantity</p>
+                                }
+                            }
+                        }
+
+                    </div>
+                    <div id="amount-col" class="col">
+                        <label class="font-weight-bold">Amount</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                    <p>@order.Amount</p>
+                                }
+                            }
+                        }
+
+                    </div>
+                    <div id="rate-col" class="col">
+                        <label class="font-weight-bold">Rate</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                    <p>@order.Rate</p>
+                                }
+                            }
+                        }
+
+                    </div>
+                    <div id="actions-col" class="col">
+                        <label class="font-weight-bold d-block">Actions</label>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var order in Model)
+                                {
+                                        
+                                        <button type="button" class="edit-btn" data-id="@order.OrderId">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                             
+                                    @*<form method="get" action="@Url.Action("GetItemOrderById", "SalesOrder")" asp-route-id="@Model.ElementAt(0).ItemNumber">
+                                            <button type="submit" class="edit-btn">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <button type="button" class="delete-btn">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>*@
+                                }
+                            }
+                        }
+
+                    </div>
+                </div>
+                <form>
+                    <button class="btn btn-primary mt-3">Submit Order</button>
                 </form>
             </div>
         </div>
@@ -105,6 +173,17 @@
 </div>
 
 <script>
+    const itemCol = document.getElementById("item-col");
+    const numCol = document.getElementById("number-col");
+    const descCol = document.getElementById("desc-col");
+    const qtyCol = document.getElementById("qty-col");
+    const amtCol = document.getElementById("amount-col");
+    const rateCol = document.getElementById("rate-col");
+    //const taxCol = document.getElementById("tax-col");
+    const actionsCol = document.getElementById("actions-col");
+
+    const salesOrders = []
+
     async function getCustomerJobs(jobsListContainer) {
         try {
             const fetchUrl = fetch("/Customer/GetCustomerJobs");
@@ -114,7 +193,7 @@
             if (result.length > 0) {
                 const customerJobs = result.map(job => `<option>${job.Name}</option>`);
 
-                jobsListContainer.querySelector(".form-select").innerHTML += customerJobs.join("")
+                jobsListContainer.querySelector(".customer-list").innerHTML += customerJobs.join("")
             } else {
                 jobsListContainer.innerHTML = `<p>There are no customer jobs. Add new customer jobs to your QuickBooks company file and then try again</p>`
             }
@@ -125,50 +204,223 @@
         }
         return jobsListContainer;
     }
-    const itemCol = document.getElementById("item-col");
-    const descCol = document.getElementById("desc-col");
-    const qtyCol = document.getElementById("qty-col");
-    const amtCol = document.getElementById("amount-col");
-    const rateCol = document.getElementById("rate-col");
+
     async function getItems(itemsContainer) {
-       
         try {
             const fetchUrl = fetch("/Item/GetItems");
             const response = await fetchUrl;
             const result = await response.json();
-            console.log(result)
+
             if (result.length > 0) {
-                
-                const arr = [itemCol, descCol, qtyCol, amtCol, rateCol]
-                const items = result.map(item => {
-                    arr[0].innerHTML += `<p>${item.Name}</p>`
-                    arr[1].innerHTML += `<p>${item.Description}</p>`
-                });
+                const items = result.map(item => `<option>${item.Name}</option>`);
+                itemsContainer.querySelector(".items-list").innerHTML += items.join("");
 
             } else {
-                itemsContainer.innerHTML = `<p>No items added</p>`
+                itemsContainer.innerHTML = `<p>There are no items. Reconnect to QuickBooks and then try again.</p>`
             }
         }
         catch (error) {
             itemsContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
             console.log("Error fetching items: ", error);
         }
-
         return itemsContainer;
     }
-    function modalToggle() {
-        $("#modal-btn").click(function () {
-            $("#staticBackdrop").modal()
-        });
+
+    async function createSalesOrder() {
+        //let result;
+        try {
+            const fetchUrl = fetch("/SalesOrder/GetSalesOrders");
+            const response = await fetchUrl;
+            const result = await response.json();
+            if (result.length > 0) {
+                result.map(order => salesOrder.push(order))
+            }
+            //console.log(result)
+            //if (result.length > 0) {
+            //    const arr = [itemCol, numCol, descCol, qtyCol, amtCol, rateCol, actionsCol];
+
+            //    result.map(item => {
+            //        arr[0].innerHTML += `<p>${item.ItemName}</p>`
+            //        arr[1].innerHTML += `<p>${item.ItemNumber}</p>`
+            //        arr[2].innerHTML += `<p>${item.Description}</p>`
+            //        arr[3].innerHTML += `<p>${item.Quantity}</p>`
+            //        arr[4].innerHTML += `<p>${item.Amount}</p>`
+            //        arr[5].innerHTML += `<p>${item.Rate}</p>`
+            //        //arr[1].innerHTML += `<p>${item.Tax}</p>`
+            //        arr[6].innerHTML += `
+            //        <div>
+            //            <button type="button" class="edit-btn" id=${item.OrderId} onclick="getId('${item.OrderId}')">
+            //                <i class="fa-solid fa-pen-to-square"></i>
+            //            </button>
+            //            <button type="button" class="delete-btn">
+            //                 <i class="fa-solid fa-trash"></i>
+            //            </button>
+            //        </div>
+            //        `
+            //    });
+
+            //} else {
+            //    salesOrderContainer.innerHTML = `<p>No items added</p>`
+            //}
+        }
+        catch (error) {
+            //salesOrderContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
+            console.log("Error fetching items: ", error);
+        }
+
+        return result;
+    }
+
+    //const response = await fetch(`/SalesOrder/GetItemOrderById?id=${orderId}`);
+    async function getItemById(itemId) {
+        try {
+            const response = await fetch(`/SalesOrder/GetItemOrderById/${itemId}`);
+
+            if (!response.ok) {
+                throw new Error(`Error fetching item: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Error fetching item:', error);
+            
+            alert('An error occurred while retrieving item details. Please try again later.');
+        }
+    }
+
+   function modalToggle() {
+  $("#modal-btn").click(function () {
+    $("#staticBackdrop").modal('show'); // Use jQuery's modal('show') for proper modal behavior
+  });
+
+  $(".edit-btn").click(async function (e) {
+    e.preventDefault();
+     const itemId = e.target.parentElement.getAttribute("data-id"); 
+
+      try {
+         const item = await getItemById(itemId);
+        console.log(item)
+        //if (item != undefined) {
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/SalesOrder/UpdateItemOrder',
+        //        data: JSON.stringify({ item: item }),
+        //        contentType: 'application/json; charset=utf-8',
+        //        dataType: 'json',
+        //        success: function (data) {
+
+        //            return data
+
+        //        },
+        //        error: function (error) {
+        //            console.log(error);
+        //        }
+        //    });
+        //}
+        updateModalContent(item); 
+
+    } catch (error) {
+      console.error('Error fetching item:', error);
+
+      alert('An error occurred while retrieving item details. Please try again later.');
+    }
+  });
+    }
+
+    function updateModalContent(item) {
+        const modalContent = $("#staticBackdrop .modal-content");
+
+        // Clear any existing content in the modal body
+        modalContent.empty();
+
+        // Build the modal content dynamically using item data
+        const form = `
+      
+                      <form method="post" action="@Url.Action("UpdateItemOrder", "SalesOrder")">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col mb-3">
+                        <label for="item" class="form-label">Item</label>
+                        <div id="itemsContainer">
+                            <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
+                                <option selected>${item.ItemName}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col mb-3">
+                        <label for="desc" class="form-label">Description</label>
+                        <input name="Description" type="text" class="form-control" id="desc" value=${item.Description} />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="qty" class="form-label">Quantity</label>
+                        <input name="Quantity" type="text" class="form-control" id="qty" value=${item.Quantity} />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="amt" class="form-label">Amount</label>
+                        <input name="Amount" type="text" class="form-control" id="amt" value=${item.Amount} />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="rate" class="form-label">Rate</label>
+                        <input name="Rate" type="text" class="form-control" id="rate" value=${item.Rate} />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+  `;
+
+        modalContent.append(form);
+        $("#staticBackdrop").modal('show');
     }
 
     $(document).ready(function () {
         const jobsListContainer = document.getElementById("customerJobsList");
         const itemsContainer = document.getElementById("itemsContainer");
+        const salesOrderContainer = document.getElementById("salesOrderContainer");
+        salesOrderContainer.classList.add("hidden")
+        const editBtn = document.querySelector(".edit-btn")
+        
         //modal to add new item
         modalToggle();
         getCustomerJobs(jobsListContainer);
         getItems(itemsContainer);
+       
+        //CreateSalesOrder(salesOrderContainer);
+        //CreateSalesOrder().then(result => {
+        //    if (result.length > 0) {
+        //        salesOrderContainer.classList.remove("hidden")
+        //        const arr = [itemCol, numCol, descCol, qtyCol, amtCol, rateCol, actionsCol];
+
+        //        result.map(item => {
+        //            arr[0].innerHTML += `<p>${item.ItemName}</p>`
+        //            arr[1].innerHTML += `<p>${item.ItemNumber}</p>`
+        //            arr[2].innerHTML += `<p>${item.Description}</p>`
+        //            arr[3].innerHTML += `<p>${item.Quantity}</p>`
+        //            arr[4].innerHTML += `<p>${item.Amount}</p>`
+        //            arr[5].innerHTML += `<p>${item.Rate}</p>`
+        //            //arr[1].innerHTML += `<p>${item.Tax}</p>`
+        //            arr[6].innerHTML += `
+        //            <div>
+        //                <button type="button" class="edit-btn" id=${item.OrderId} onclick="getId('${item.OrderId}')">
+        //                    <i class="fa-solid fa-pen-to-square"></i>
+        //                </button>
+        //                <button type="button" class="delete-btn">
+        //                     <i class="fa-solid fa-trash"></i>
+        //                </button>
+        //            </div>
+        //            `
+        //        });
+
+        //    } else {
+        //        salesOrderContainer.innerHTML = `<p>No items added</p>`
+        //    }
+        //})
 
     });
 </script>

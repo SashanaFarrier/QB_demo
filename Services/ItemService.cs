@@ -5,6 +5,7 @@ using QBFC15Lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.SessionState;
 using Item = MvcCodeFlowClientManual.Models.Item;
@@ -22,9 +23,8 @@ namespace MvcCodeFlowClientManual.Services
         //We will have to change the object name from Item as a current object within the qb lib already has that name, so there's a conflict
         public IList<Models.Item> AllItemsList = new List<Models.Item>();
         List<object> SubItems = new List<object>();
-        public IList<Models.Item> GetItems()
+        public async Task<IList<Models.Item>> GetItems()
         {
-           
             if (qBConnection.getSessionManager() != null)
             {
                 try

@@ -16,7 +16,6 @@ namespace MvcCodeFlowClientManual.Controllers
     public class ItemController : Controller
     {
         ItemService ItemService = new ItemService();
-        private static List<Item> Items = new List<Item>();
         public ActionResult Index()
         {
             return View();
@@ -48,30 +47,10 @@ namespace MvcCodeFlowClientManual.Controllers
         //    return View("Index",viewModel); 
         //}
 
-        public ActionResult GetItems()
+        public async Task<JsonResult> GetItems()
         {
-            return Json(Items, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult CreateItem(Item item)
-        {
-            if(ModelState.IsValid)
-            {
-                var itemFound = ItemService.GetItems().First(i => i.Name.ToLower() == item.Name.ToLower()) ?? null;
-                if (itemFound != null)
-                {
-                    Item newItem = new Item
-                    {
-                        ItemId = itemFound.ItemId,
-                        Name = item.Name,
-                        Description = item.Description,
-                    };
-                    Items.Add(newItem);
-                    
-                }
-            }
-            return RedirectToAction("Index", "App");
+            var items = await ItemService.GetItems();
+            return Json(items, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPut]

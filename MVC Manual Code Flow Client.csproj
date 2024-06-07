@@ -212,6 +212,8 @@
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\SalesOrderController.cs" />
+    <Compile Include="Data\NewOrders.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -314,6 +316,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Item\Index.cshtml" />
+    <Content Include="Views\Shared\_AddItemModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

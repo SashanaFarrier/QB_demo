@@ -97,7 +97,6 @@ namespace MvcCodeFlowClientManual.Services
                     //sessionBegun = true;
 
                     // Send the request to QuickBooks
-                    //IResponseList responseList1 = (IResponseList)sessionManager.DoRequests(requestMsgSet);
                     IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
                         sessionManager.EndSession();
                         sessionBegun = false;

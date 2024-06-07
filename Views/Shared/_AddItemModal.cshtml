@@ -1,0 +1,44 @@
+﻿
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("CreateSalesOrder", "SalesOrder")">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col mb-3">
+                        <label for="item" class="form-label">Item</label>
+                        <div id="itemsContainer">
+                            <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
+                                <option selected value="Select">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col mb-3">
+                        <label for="desc" class="form-label">Description</label>
+                        <input name="Description" type="text" class="form-control" id="desc">
+                    </div>
+                    <div class="col mb-3">
+                        <label for="qty" class="form-label">Quantity</label>
+                        <input name="Quantity" type="text" class="form-control" id="qty">
+                    </div>
+                    <div class="col mb-3">
+                        <label for="amt" class="form-label">Amount</label>
+                        <input name="Amount" type="text" class="form-control" id="amt">
+                    </div>
+                    <div class="col mb-3">
+                        <label for="rate" class="form-label">Rate</label>
+                        <input name="Rate" type="text" class="form-control" id="rate">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

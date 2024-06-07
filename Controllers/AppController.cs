@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using MvcCodeFlowClientManual.Models;
 using QBFC15Lib;
 using MvcCodeFlowClientManual.Config;
+using MvcCodeFlowClientManual.Data;
 
 
 namespace MvcCodeFlowClientManual.Controllers
@@ -67,7 +68,6 @@ namespace MvcCodeFlowClientManual.Controllers
             }
             return customers;
         }
-
         public ActionResult Index()
         {
             return View();

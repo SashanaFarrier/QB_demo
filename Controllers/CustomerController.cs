@@ -17,17 +17,8 @@ namespace MvcCodeFlowClientManual.Controllers
         // GET: Customer
         public async Task<JsonResult> GetCustomerJobs()
         {
-            //var viewModel = new List<Models.CustomerJob>();
             var customers = await CustomerJob.GetCustomerJobs();
 
-
-                    //foreach (var customer in customers)
-                    //{
-                        
-                    //    viewModel.Add(customer);
-                    //};
-
-            
             return Json(customers, JsonRequestBehavior.AllowGet);
 
         }

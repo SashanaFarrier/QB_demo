@@ -47,3 +47,11 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+
+.transactionContainer {
+    padding: 2em;
+    margin-top: 5em;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 1em;
+}
+
