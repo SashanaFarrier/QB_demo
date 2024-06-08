@@ -58,7 +58,7 @@ namespace MvcCodeFlowClientManual.Controllers
             
         }
 
-        
+        //Displays popup
         public ActionResult EditOrder(string id)
         {
             if(id == null)
@@ -79,7 +79,9 @@ namespace MvcCodeFlowClientManual.Controllers
         [HttpPost]
         public ActionResult UpdateOrder(Order item)
         {
-            if(ModelState.IsValid)
+            updatedOrderList.Clear();
+
+            if (ModelState.IsValid)
             {
                 var prevOrder = Orders.Find(i => i.OrderId == item.OrderId);
                 if (prevOrder == null)
@@ -116,6 +118,25 @@ namespace MvcCodeFlowClientManual.Controllers
             //Orders = updatedOrderList;
             //return View("~/Views/App/Index.cshtml", updatedOrderList);
             return RedirectToAction("Index", "App");
+        }
+
+        [HttpPost]
+        public JsonResult DeleteItem(string id)
+        {
+            var item = Orders.Find(i => i.OrderId == id);
+            if (item == null)
+            {
+                return Json(new { message = "Order not found" }, JsonRequestBehavior.AllowGet);
+            }
+
+            foreach (var order in Orders)
+            {
+                if (order.OrderId != item.OrderId)
+                {
+                    updatedOrderList.Add(order);
+                }
+            }
+            return Json(new { data = updatedOrderList, deleteItem = item.OrderId });
         }
     }
 }

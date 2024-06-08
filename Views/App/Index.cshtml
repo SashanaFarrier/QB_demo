@@ -60,83 +60,46 @@
             <div id="salesOrderContainer">
                 @if (Model != null)
                 {
-                <div class="row border border-dark mt-5 py-3 | order-details">
-
-                    <div id="item-col" class="col-2">
-                        <p class="font-weight-bold">Item</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <p>@order.ItemName</p>
-                        }
-
-                    </div>
-                    @*<div id="number-col" class="col-2">
-                        <p class="font-weight-bold">Item No.</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <p>@order.ItemNumber</p>
-                        }
-
-                    </div>*@
-                    <div id="desc-col" class="col-2">
-                        <p class="font-weight-bold">Description</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <p>@order.Description</p>
-                        }
-
-                    </div>
-                    <div id="qty-col" class="col">
-                        <p class="font-weight-bold">Quantity</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <p>@order.Quantity</p>
-                        }
-
-                    </div>
-                    <div id="amount-col" class="col">
-                        <p class="font-weight-bold">Amount</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <p>@order.Amount</p>
-                        }
-                    </div>
-                    <div id="rate-col" class="col">
-                        <p class="font-weight-bold">Rate</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <p>@order.Rate</p>
-                        }
-
-                    </div>
-                    <div id="actions-col" class="col">
-                        <p class="font-weight-bold d-block">Actions</p>
-
-                        @foreach (var order in Model)
-                        {
-                            <div class="action-btns">
-                                <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <a class="delete-btn">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </div>
-                            
-                            @*<a onclick="showInPopup('@Url.Action("EditOrder", "SalesOrder", order.OrderId)')" class="edit-btn" data-id="@order.OrderId">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>*@
-
-                        }
-                    </div>
-                </div>
-            }
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">NO.</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int count = 0;}
+                            @foreach (var order in Model)
+                            {
+                                count++;
+                                <tr id="@order.OrderId">
+                                    <th scope="row">@count</th>
+                                    <td>@order.ItemName</td>
+                                    <td>@order.Description</td>
+                                    <td>@order.Quantity</td>
+                                    <td>@order.Amount</td>
+                                    <td>@order.Rate</td>
+                                    <td class="actions-col">
+                                        <div class="action-btns">
+                                            <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <a class="delete-btn" onclick="deleteSalesOrderItem('@order.OrderId')" data-id="@order.OrderId">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                   
+                }
 
                 @if (Model != null)
                 {
@@ -240,7 +203,7 @@
             console.log("Error fetching items: ", error);
         }
 
-        
+
     }
 
     async function editSalesOrderItem(orderId) {
@@ -253,7 +216,7 @@
             }
 
             const result = await response.json();
-            console.log(result)
+            //console.log(result)
 
             if (result != null) {
                 const itemOrder = await result;
@@ -311,7 +274,59 @@
 `;
         modalContent.append(form);
         $("#staticBackdrop").modal('show');
-  }
+    }
+
+    async function deleteSalesOrderItem(id) {
+        try {
+            const response = await fetch(`/SalesOrder/DeleteItem/${id}`, {
+                method: "Post"
+            })
+            if (!response.ok) {
+                throw new Error(`Error deleting item: ${response.statusText}`)
+            }
+            const result = await response.json();
+            console.log(result)
+            let el
+            if (result) {
+                el = document.getElementById(result.deleteItem)
+                el.remove()
+//                el = document.getElementById(result.deleteItem).getAttribute("id")
+//                const table = document.querySelector("table")
+//                const tbody = document.querySelector("tbody")
+//                tbody.innerHTML = ""
+//                const html = result.data.map((i, item) => {
+//                    if (item.orderId != el) {
+//                     `<tr>
+//                     <th scope="row">${i}</th>
+//                        <td>${item.ItemName}</td>
+//                        <td>${item.Description}</td>
+//                        <td>${item.Quantity}</td>
+//                        <td>${item.Amount}</td>
+//                        <td>${item.Rate}</td>
+//                        <td>
+//                            <div class="action-btns">
+//    <a onclick="editSalesOrderItem(${'$item.OrderId'})" class="edit-btn" data-id=${"item.OrderId"}>
+//        <i class="fa-solid fa-pen-to-square"></i>
+//    </a>
+//    <a class="delete-btn" onclick="deleteSalesOrderItem(${'item.OrderId'})" data-id=${"item.OrderId"}>
+//        <i class="fa-solid fa-trash"></i>
+//    </a>
+//</div>
+//                        </td>
+//                    </tr>`
+//                    }
+
+//                });
+                
+//               tbody.innerHTML = html.join("")
+
+            }
+           // console.log('Item deleted successfully');
+        } catch (error) {
+            console.error('Error during deletion:', error);
+        }
+
+    }
 
    function modalToggle() {
       $("#modal-btn").click(function () {
@@ -324,7 +339,6 @@
         const itemsContainer = document.getElementById("itemsContainer");
         const salesOrderContainer = document.getElementById("salesOrderContainer");
         salesOrderContainer.classList.add("hidden")
-        //const editBtn = document.querySelector(".edit-btn")
 
         //modal to add new item
         modalToggle();
