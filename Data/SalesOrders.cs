@@ -9,19 +9,19 @@ namespace MvcCodeFlowClientManual.Data
 {
     public interface ISalesOrdersList
     {
-        List<SalesOrder> GetOrders();
-        void AddOrder(SalesOrder order);
+        List<SalesOrder> GetItems();
+        void AddItem(SalesOrder order);
     }
 
     public class SalesOrders: ISalesOrdersList
     {
         private static List<SalesOrder> orders = new List<SalesOrder>();
-        public List<SalesOrder> GetOrders()
+        public List<SalesOrder> GetItems()
         {
             return orders;
         }
 
-        public void AddOrder(SalesOrder newOrder)
+        public void AddItem(SalesOrder newOrder)
         {
             orders.Add(newOrder);
         }

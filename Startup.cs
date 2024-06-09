@@ -29,12 +29,5 @@ namespace MvcCodeFlowClientManual
 
         }
 
-        //public void ConfigureServices(IServiceCollection services)
-        //{
-        //    services.AddTransient<ISalesOrdersList, SalesOrders>();
-            
-        //}
-
-
     }
 }

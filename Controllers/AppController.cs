@@ -15,12 +15,11 @@ namespace MvcCodeFlowClientManual.Controllers
 {
     public class AppController : Controller
     {
-        private readonly ISalesOrdersList _salesOrders;
+        private readonly ISalesOrdersList _salesOrderItems;
 
         public IList<Customer> customers = new List<Customer>();
 
         public QBConnection qBConnection = new QBConnection();
-        private static List<SalesOrder> Orders = new List<SalesOrder>();
 
         private QBSessionManager sessionManager;
 
@@ -28,9 +27,9 @@ namespace MvcCodeFlowClientManual.Controllers
         {
             
         }
-        public AppController(ISalesOrdersList salesOrders)
+        public AppController(ISalesOrdersList salesOrderItems)
         {
-            _salesOrders = salesOrders;
+            _salesOrderItems = salesOrderItems;
         }
         public IList<Customer> ApiCallService()
         {
@@ -82,28 +81,20 @@ namespace MvcCodeFlowClientManual.Controllers
         }
         public ActionResult Index()
         {
-            if (_salesOrders != null)
+            if (_salesOrderItems != null)
             {
-               var orders = _salesOrders.GetOrders().ToList();
+               var orders = _salesOrderItems.GetItems().ToList();
                 return View(orders);
             }
             else
             {
-                // Handle the case where _salesOrders is null (e.g., return an empty list or error view)
-                return View(new List<SalesOrder>()); // Return an empty list
+              
+                return View();
             }
         }
         public ActionResult Error()
         {
             return View("Error");
-        }
-
-        [HttpPost]
-        public ActionResult ClearOrders()
-        {
-           var orders = _salesOrders.GetOrders().ToList();
-            orders.Clear();
-            return View("Index", orders);
         }
 
     }

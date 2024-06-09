@@ -17,13 +17,13 @@ namespace MvcCodeFlowClientManual.Controllers
 {
     public class SalesOrderController : Controller
     {
-        private readonly ISalesOrdersList _salesOrders;
+        private readonly ISalesOrdersList _salesOrderItems;
         ItemService ItemService = new ItemService();
         //private static List<SalesOrder> Orders = new List<SalesOrder>();
 
-        public SalesOrderController(ISalesOrdersList salesOrders)
+        public SalesOrderController(ISalesOrdersList salesOrderItems)
         {
-            _salesOrders = salesOrders;
+            _salesOrderItems = salesOrderItems;
         }
 
         [HttpPost]
@@ -51,7 +51,7 @@ namespace MvcCodeFlowClientManual.Controllers
                     };
                     
                     //Orders.Add(newItem);
-                    _salesOrders.AddOrder(newItem);
+                    _salesOrderItems.AddItem(newItem);
                    
                   
                 }
@@ -62,7 +62,7 @@ namespace MvcCodeFlowClientManual.Controllers
         public JsonResult GetItemOrderById(string id)
         {
             //var item = Orders.Find(i => i.OrderId.ToString() == id);
-            var item = _salesOrders.GetOrders().Find(x => x.OrderId == id);
+            var item = _salesOrderItems.GetItems().Find(x => x.OrderId == id);
                 return Json(item, JsonRequestBehavior.AllowGet);
             
         }
@@ -76,7 +76,7 @@ namespace MvcCodeFlowClientManual.Controllers
             }
 
             //var item = Orders.Find(x => x.OrderId == id);
-            var item = _salesOrders.GetOrders().Find(x => x.OrderId == id);
+            var item = _salesOrderItems.GetItems().Find(x => x.OrderId == id);
 
             if(item == null)
             {
@@ -93,29 +93,31 @@ namespace MvcCodeFlowClientManual.Controllers
             if (ModelState.IsValid)
             {
                 //var prevOrder = Orders.Find(i => i.OrderId == item.OrderId);
-                var prevOrder = _salesOrders.GetOrders().Find(x => x.OrderId == item.OrderId);
-                if (prevOrder == null)
+                var prevItem = _salesOrderItems.GetItems().Find(x => x.OrderId == item.OrderId);
+                if (prevItem == null)
                 {
                     return null;
                     //return RedirectToAction("Index", "App");
                     //return View("~/Views/App/Index.cshtml");
                 }
 
-                SalesOrder updatedOrder = new SalesOrder();
-                updatedOrder.OrderId = prevOrder.OrderId;
-                updatedOrder.TransactionDate = prevOrder.TransactionDate;
-                updatedOrder.ItemName = item.ItemName;
-                updatedOrder.ItemNumber = item.ItemNumber;
-                updatedOrder.Description = item.Description;
-                updatedOrder.Quantity = item.Quantity;
-                updatedOrder.Rate = item.Rate;
-                updatedOrder.Amount = item.Amount;
+                SalesOrder updatedItem = new SalesOrder()
+                {
+                    OrderId = prevItem.OrderId,
+                    TransactionDate = prevItem.TransactionDate,
+                    ItemName = item.ItemName,
+                    ItemNumber = item.ItemNumber,
+                    Description = item.Description,
+                    Quantity = item.Quantity,
+                    Rate = item.Rate,
+                    Amount = item.Amount
+            };
 
                 //Orders.Remove(prevOrder);
                 //Orders.Add(updatedOrder);
 
-                _salesOrders.GetOrders().Remove(prevOrder);
-                _salesOrders.AddOrder(updatedOrder);
+                _salesOrderItems.GetItems().Remove(prevItem);
+                _salesOrderItems.AddItem(updatedItem);
                 return RedirectToAction("Index", "App");
             }
 
@@ -127,16 +129,23 @@ namespace MvcCodeFlowClientManual.Controllers
         public JsonResult DeleteItem(string id)
         {
             //var item = Orders.Find(i => i.OrderId == id);
-            var item = _salesOrders.GetOrders().Find(x => x.OrderId == id);
+            var item = _salesOrderItems.GetItems().Find(x => x.OrderId == id);
             if (item == null)
             {
                 return Json(new { message = "Order not found" }, JsonRequestBehavior.AllowGet);
             }
             //Orders.Remove(item);
-            _salesOrders.GetOrders().Remove(item);
-            return Json(new { data = _salesOrders.GetOrders(), deleteItem = item.OrderId });
+            _salesOrderItems.GetItems().Remove(item);
+            return Json(new { data = _salesOrderItems.GetItems(), deleteItem = item.OrderId });
         }
 
+        [HttpPost]
+        public ActionResult ClearOrders()
+        {
+            var orders = _salesOrderItems.GetItems();
+            orders.Clear();
+            return RedirectToAction("Index", "App");
+        }
     }
 
 }

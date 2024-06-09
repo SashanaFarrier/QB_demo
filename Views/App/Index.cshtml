@@ -19,7 +19,7 @@
             <form>
                 <div class="col mb-3">
                     <label for="customerId" class="form-label">Customer ID</label>
-                    <input type="text" class="form-control" id="customerId" placeholder="12345398">
+                    <input type="text" class="form-control" id="customerId" placeholder="Customer ID display" readonly>
                 </div>
             </form>
 
@@ -32,9 +32,9 @@
         </div>
         <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
             <div id="customerJobsList" class="col mb-3 p-0">
-                <label for="customer" class="form-label d-block">Customer</label>
+                <label for="customerName" class="form-label d-block">Customer</label>
 
-                <select class="form-select mb-3 customer-list" aria-label="customer jobs list">
+                <select id="customerName" class="form-select mb-3 customer-list" aria-label="customer jobs list">
                     <option selected value="Select">Select</option>
                 </select>
             </div>
@@ -49,7 +49,7 @@
                     </form>
                 </div>
                 <div class="col">
-                    <form method="post" action="@Url.Action("ClearOrders", "App")">
+                    <form method="post" action="@Url.Action("ClearOrders", "SalesOrder")">
                         <button class="btn btn-danger">Clear All</button>
                     </form>
                 </div>
@@ -99,7 +99,7 @@
                             }
                         </tbody>
                     </table>
-                   
+
                 }
 
                 @if (Model != null && Model.Count > 0)
@@ -113,15 +113,9 @@
     </div>
 </div>
 <script>
-    const itemCol = document.getElementById("item-col");
-    const numCol = document.getElementById("number-col");
-    const descCol = document.getElementById("desc-col");
-    const qtyCol = document.getElementById("qty-col");
-    const amtCol = document.getElementById("amount-col");
-    const rateCol = document.getElementById("rate-col");
-    //const taxCol = document.getElementById("tax-col");
-    const actionsCol = document.getElementById("actions-col");
-
+    const customerIdInput = document.getElementById("customerId");
+    const customerNameInput = document.getElementById("customerName")
+  
     async function getCustomerJobs(jobsListContainer) {
         try {
             const fetchUrl = fetch("/Customer/GetCustomerJobs");
@@ -129,9 +123,37 @@
             const result = await response.json();
 
             if (result.length > 0) {
-                const customerJobs = result.map(job => `<option>${job.Name}</option>`);
+                //const customerJobs = result.map(customerJob => `<option>${customerJob.Name}</option>`);
+                result.map(customerJob => {
+                    if (customerJob.Locations.length > 0) {
+                        const optgroupEl = document.createElement("optgroup")
+                        optgroupEl.label = customerJob.Name
+                        
+                        let optionEl = document.createElement("option")
+                        optionEl.text = customerJob.Name
 
-                jobsListContainer.querySelector(".customer-list").innerHTML += customerJobs.join("")
+                        optgroupEl.append(optionEl)
+
+                        const locations = customerJob.Locations;
+                        locations.map(location => {
+                            optionEl = document.createElement("option")
+                            optionEl.text = location
+                            optgroupEl.append(optionEl)
+
+                        });
+                        jobsListContainer.querySelector(".customer-list").appendChild(optgroupEl)
+                        
+                    } else {
+                        const optionEl = document.createElement("option")
+                        optionEl.text = customerJob.Name
+                        jobsListContainer.querySelector(".customer-list").appendChild(optionEl)
+                        
+                    }
+                   
+                });
+
+                getCustomerId(result)
+                //jobsListContainer.querySelector(".customer-list").innerHTML += customerJobs.join("")
             } else {
                 jobsListContainer.innerHTML = `<p>There are no customer jobs. Add new customer jobs to your QuickBooks company file and then try again</p>`
             }
@@ -141,6 +163,20 @@
             console.log("Error fetching customer jobs: ", error);
         }
         return jobsListContainer;
+    }
+
+    function getCustomerId(customerJobs) {
+        customerNameInput.addEventListener("change", (e) => {
+            if (e.target.value == "Select")
+                customerIdInput.value = ""
+
+            customerJobs.filter(customerJob => {
+                if (customerJob.Name == e.target.value) {
+                    customerIdInput.value = customerJob.CustomerListID
+                }
+            })
+
+        })
     }
 
     async function getItems(itemsContainer) {
@@ -163,19 +199,6 @@
         }
         return itemsContainer;
     }
-
-    //async function createSalesOrder() {
-    //    try {
-    //        const fetchUrl = fetch("/SalesOrder/GetSalesOrders");
-    //        const response = await fetchUrl;
-    //        const result = await response.json();
-    //    }
-    //    catch (error) {
-    //        console.log("Error fetching items: ", error);
-    //    }
-
-
-    //}
 
     async function editSalesOrderItem(orderId) {
 
@@ -204,6 +227,9 @@
 
     function updateModalContentHTML(itemOrder) {
         const modalContent = $("#staticBackdrop .modal-content");
+        //const itemsContainer = document.getElementById("itemsContainer");
+        //const options = getItems(itemsContainer)
+        //console.log(getItems(options))
         modalContent.empty();
         const form = `
                     <form method="post" action="@Url.Action("UpdateOrder", "SalesOrder")">
@@ -261,38 +287,8 @@
             if (result) {
                 el = document.getElementById(result.deleteItem)
                 el.remove()
-//                el = document.getElementById(result.deleteItem).getAttribute("id")
-//                const table = document.querySelector("table")
-//                const tbody = document.querySelector("tbody")
-//                tbody.innerHTML = ""
-//                const html = result.data.map((i, item) => {
-//                    if (item.orderId != el) {
-//                     `<tr>
-//                     <th scope="row">${i}</th>
-//                        <td>${item.ItemName}</td>
-//                        <td>${item.Description}</td>
-//                        <td>${item.Quantity}</td>
-//                        <td>${item.Amount}</td>
-//                        <td>${item.Rate}</td>
-//                        <td>
-//                            <div class="action-btns">
-//    <a onclick="editSalesOrderItem(${'$item.OrderId'})" class="edit-btn" data-id=${"item.OrderId"}>
-//        <i class="fa-solid fa-pen-to-square"></i>
-//    </a>
-//    <a class="delete-btn" onclick="deleteSalesOrderItem(${'item.OrderId'})" data-id=${"item.OrderId"}>
-//        <i class="fa-solid fa-trash"></i>
-//    </a>
-//</div>
-//                        </td>
-//                    </tr>`
-//                    }
-
-//                });
-                
-//               tbody.innerHTML = html.join("")
-
             }
-           // console.log('Item deleted successfully');
+
         } catch (error) {
             console.error('Error during deletion:', error);
         }
