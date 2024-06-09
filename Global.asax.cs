@@ -12,6 +12,13 @@ namespace MvcCodeFlowClientManual
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            //WebApiConfig.Register(GlobalConfiguration.Configuration);
+            
+
+            Bootstrapper.Initialise();
+
+            //AppConfig.Configure();
         }
 
         void Application_EndRequest(object sender, System.EventArgs e)

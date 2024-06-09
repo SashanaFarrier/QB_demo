@@ -6,7 +6,7 @@ using System.Web;
 
 namespace MvcCodeFlowClientManual.Models
 {
-    public class Order
+    public class SalesOrder
     {
         public string OrderId { get; set; }
         public DateTime TransactionDate { get; set; }

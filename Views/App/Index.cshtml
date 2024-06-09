@@ -1,6 +1,7 @@
 ﻿
 @using MvcCodeFlowClientManual.Models
-@model List<Order>
+@model List<SalesOrder>
+
 @{
     ViewBag.Title = "Home Page";
 
@@ -48,7 +49,7 @@
                     </form>
                 </div>
                 <div class="col">
-                    <form method="post" action="@Url.Action("Index", "App")">
+                    <form method="post" action="@Url.Action("ClearOrders", "App")">
                         <button class="btn btn-danger">Clear All</button>
                     </form>
                 </div>
@@ -58,12 +59,12 @@
             @Html.Partial("_AddItemModal")
 
             <div id="salesOrderContainer">
-                @if (Model != null)
+                @if (Model != null && Model.Count > 0)
                 {
-                    <table class="table table-striped">
+                    <table class="table table-striped mt-5">
                         <thead>
                             <tr>
-                                <th scope="col">NO.</th>
+                                <th scope="col">No.</th>
                                 <th scope="col">Item</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Quantity</th>
@@ -78,7 +79,7 @@
                             {
                                 count++;
                                 <tr id="@order.OrderId">
-                                    <th scope="row">@count</th>
+                                    <th scope="row">@count.</th>
                                     <td>@order.ItemName</td>
                                     <td>@order.Description</td>
                                     <td>@order.Quantity</td>
@@ -101,7 +102,7 @@
                    
                 }
 
-                @if (Model != null)
+                @if (Model != null && Model.Count > 0)
                 {
                     <form>
                         <button class="btn btn-primary mt-3">Submit Order</button>
@@ -163,48 +164,18 @@
         return itemsContainer;
     }
 
-    async function createSalesOrder() {
-        //let result;
-        try {
-            const fetchUrl = fetch("/SalesOrder/GetSalesOrders");
-            const response = await fetchUrl;
-            const result = await response.json();
-            //return result;
-            //console.log(result)
-            //if (result.length > 0) {
-            //    const arr = [itemCol, numCol, descCol, qtyCol, amtCol, rateCol, actionsCol];
-
-            //    result.map(item => {
-            //        arr[0].innerHTML += `<p>${item.ItemName}</p>`
-            //        arr[1].innerHTML += `<p>${item.ItemNumber}</p>`
-            //        arr[2].innerHTML += `<p>${item.Description}</p>`
-            //        arr[3].innerHTML += `<p>${item.Quantity}</p>`
-            //        arr[4].innerHTML += `<p>${item.Amount}</p>`
-            //        arr[5].innerHTML += `<p>${item.Rate}</p>`
-            //        //arr[1].innerHTML += `<p>${item.Tax}</p>`
-            //        arr[6].innerHTML += `
-            //        <div>
-            //            <button type="button" class="edit-btn" id=${item.OrderId} onclick="getId('${item.OrderId}')">
-            //                <i class="fa-solid fa-pen-to-square"></i>
-            //            </button>
-            //            <button type="button" class="delete-btn">
-            //                 <i class="fa-solid fa-trash"></i>
-            //            </button>
-            //        </div>
-            //        `
-            //    });
-
-            //} else {
-            //    salesOrderContainer.innerHTML = `<p>No items added</p>`
-            //}
-        }
-        catch (error) {
-            //salesOrderContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
-            console.log("Error fetching items: ", error);
-        }
+    //async function createSalesOrder() {
+    //    try {
+    //        const fetchUrl = fetch("/SalesOrder/GetSalesOrders");
+    //        const response = await fetchUrl;
+    //        const result = await response.json();
+    //    }
+    //    catch (error) {
+    //        console.log("Error fetching items: ", error);
+    //    }
 
 
-    }
+    //}
 
     async function editSalesOrderItem(orderId) {
 

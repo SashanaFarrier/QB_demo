@@ -7,19 +7,31 @@ using MvcCodeFlowClientManual.Models;
 using QBFC15Lib;
 using MvcCodeFlowClientManual.Config;
 using MvcCodeFlowClientManual.Data;
+using System.Linq;
+
 
 
 namespace MvcCodeFlowClientManual.Controllers
 {
     public class AppController : Controller
     {
+        private readonly ISalesOrdersList _salesOrders;
 
         public IList<Customer> customers = new List<Customer>();
 
         public QBConnection qBConnection = new QBConnection();
+        private static List<SalesOrder> Orders = new List<SalesOrder>();
 
         private QBSessionManager sessionManager;
-        
+
+        public AppController()
+        {
+            
+        }
+        public AppController(ISalesOrdersList salesOrders)
+        {
+            _salesOrders = salesOrders;
+        }
         public IList<Customer> ApiCallService()
         {
             if (qBConnection.getSessionManager() != null)
@@ -70,7 +82,16 @@ namespace MvcCodeFlowClientManual.Controllers
         }
         public ActionResult Index()
         {
-            return View();
+            if (_salesOrders != null)
+            {
+               var orders = _salesOrders.GetOrders().ToList();
+                return View(orders);
+            }
+            else
+            {
+                // Handle the case where _salesOrders is null (e.g., return an empty list or error view)
+                return View(new List<SalesOrder>()); // Return an empty list
+            }
         }
         public ActionResult Error()
         {
@@ -80,7 +101,8 @@ namespace MvcCodeFlowClientManual.Controllers
         [HttpPost]
         public ActionResult ClearOrders()
         {
-            List<Order> orders = new List<Order>();
+           var orders = _salesOrders.GetOrders().ToList();
+            orders.Clear();
             return View("Index", orders);
         }
 
