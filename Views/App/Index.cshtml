@@ -7,115 +7,119 @@
 
 }
 
-<div class="jumbotron">
-    <h1>QuickBooks Sales Order</h1>
-    <h2>Create your order</h2>
-</div>
-
-@*<p class="font-weight-bold text-uppercase mt-4">Start a new transaction</p>*@
-<div class="row flex-column | transactionContainer">
+<div class="row justify-content-between mb-4">
     <div class="col">
-        <div class="row justify-content-between">
-            <form>
-                <div class="col mb-3">
-                    <label for="customerId" class="form-label">Customer ID</label>
-                    <input type="text" class="form-control" id="customerId" placeholder="Customer ID display" readonly>
-                </div>
-            </form>
-
-            <form>
-                <div class="col mb-3">
-                    <label for="date" class="form-label">Transaction Date</label>
-                    <input type="date" class="form-control" id="date">
-                </div>
-            </form>
-        </div>
+        <h1 class="text-uppercase">Sales Order</h1>
+    </div>
+    <div class="col create-sales-order-cta">
+        <form method="get" action="@Url.Action("GetItems", "Item")">
+            <button type="button" id="modal-btn" class="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create a new sales order</button>
+        </form>
+    </div>
+</div>
+<div class="row justify-content-between py-4 | box transaction-info">
+    <div class="col">
+        <form>
+            <label for="date" class="form-label">Transaction Date</label>
+            <input type="date" class="form-control" id="date">
+        </form>
+    </div>
+    <div class="col">
         <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
-            <div id="customerJobsList" class="col mb-3 p-0">
-                <label for="customerName" class="form-label d-block">Customer</label>
+            <div id="customerJobsList">
+                <label for="customerName" class="form-label">Select Customer Job</label>
 
-                <select id="customerName" class="form-select mb-3 customer-list" aria-label="customer jobs list">
+                <select id="customerName" class="form-select form-control customer-list" aria-label="customer jobs list">
                     <option selected value="Select">Select</option>
                 </select>
             </div>
         </form>
     </div>
-    <div class="col">
-        <div class="transactions">
-            <div class="row justify-content-between">
-                <div class="col-10">
-                    <form method="get" action="@Url.Action("GetItems", "Item")">
-                        <button type="button" id="modal-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+</div>
+
+<div class="transaction-container">
+    <div class="row justify-content-between align-items-center">
+        <div class="col">
+            <p class="font-weight-bold text-uppercase m-0">Pending Order (@Model.Count)</p>
+        </div>
+        <div class="col customerId-container">
+            <form>
+                <label for="customerId" class="form-label" hidden>Customer ID</label>
+                <input type="text" class="form-control" id="customerId" placeholder="Customer ID" readonly>
+            </form>
+        </div>
+    </div>
+    <!-- Modal -->
+
+    @Html.Partial("_AddItemModal")
+
+    <div id="salesOrderContainer">
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="table-container box overflow-hidden mt-5">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">No.</th>
+                            <th scope="col">Item</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int count = 0;}
+                        @foreach (var order in Model)
+                        {
+                            count++;
+                            <tr id="@order.OrderId">
+                                <th class="item-index" scope="row">@count.</th>
+                                <td>@order.ItemName</td>
+                                <td>@order.Description</td>
+                                <td>@order.Quantity</td>
+                                <td>@order.Amount</td>
+                                <td>@order.Rate</td>
+                                <td class="actions-col">
+                                    <div class="action-btns">
+                                        <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a class="delete-btn" onclick="deleteSalesOrderItem('@order.OrderId')" data-id="@order.OrderId">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="row justify-content-between mt-5">
+                <div class="col submit-order-form-container">
+                    <form>
+                        <button class="btn btn-primary">Submit Order</button>
                     </form>
                 </div>
-                <div class="col">
+                <div class="col clear-all-form-container">
                     <form method="post" action="@Url.Action("ClearOrders", "SalesOrder")">
                         <button class="btn btn-danger">Clear All</button>
                     </form>
                 </div>
             </div>
-            <!-- Modal -->
-
-            @Html.Partial("_AddItemModal")
-
-            <div id="salesOrderContainer">
-                @if (Model != null && Model.Count > 0)
-                {
-                    <table class="table table-striped mt-5">
-                        <thead>
-                            <tr>
-                                <th scope="col">No.</th>
-                                <th scope="col">Item</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Rate</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{ int count = 0;}
-                            @foreach (var order in Model)
-                            {
-                                count++;
-                                <tr id="@order.OrderId">
-                                    <th scope="row">@count.</th>
-                                    <td>@order.ItemName</td>
-                                    <td>@order.Description</td>
-                                    <td>@order.Quantity</td>
-                                    <td>@order.Amount</td>
-                                    <td>@order.Rate</td>
-                                    <td class="actions-col">
-                                        <div class="action-btns">
-                                            <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </a>
-                                            <a class="delete-btn" onclick="deleteSalesOrderItem('@order.OrderId')" data-id="@order.OrderId">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
-                }
-
-                @if (Model != null && Model.Count > 0)
-                {
-                    <form>
-                        <button class="btn btn-primary mt-3">Submit Order</button>
-                    </form>
-                }
-            </div>
-        </div>
+        }
     </div>
 </div>
+
 <script>
     const customerIdInput = document.getElementById("customerId");
     const customerNameInput = document.getElementById("customerName")
-  
+
     async function getCustomerJobs(jobsListContainer) {
         try {
             const fetchUrl = fetch("/Customer/GetCustomerJobs");
@@ -128,7 +132,7 @@
                     if (customerJob.Locations.length > 0) {
                         const optgroupEl = document.createElement("optgroup")
                         optgroupEl.label = customerJob.Name
-                        
+
                         let optionEl = document.createElement("option")
                         optionEl.text = customerJob.Name
 
@@ -142,14 +146,14 @@
 
                         });
                         jobsListContainer.querySelector(".customer-list").appendChild(optgroupEl)
-                        
+
                     } else {
                         const optionEl = document.createElement("option")
                         optionEl.text = customerJob.Name
                         jobsListContainer.querySelector(".customer-list").appendChild(optionEl)
-                        
+
                     }
-                   
+
                 });
 
                 getCustomerId(result)

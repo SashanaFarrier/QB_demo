@@ -1,6 +1,12 @@
-﻿body {
-    padding-top: 50px;
+﻿/* html, body {
+     height: 100%;
+ }
+*/
+body {
+    /*padding-top: 50px;*/
     padding-bottom: 20px;
+    /*background-color: #1b263b;*/
+    background-color: #778da9;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -9,16 +15,8 @@
     padding-right: 15px;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-/*input,
-select,
-textarea {
-    max-width: 400px;
-}*/
-
 select {
     width: 100%;
-    max-width: 400px;
     padding: .5em;
     border-radius: .25em;
 }
@@ -48,11 +46,30 @@ input[type="checkbox"].input-validation-error {
     display: none;
 }
 
-.transactionContainer {
-    padding: 2em;
-    margin-top: 5em;
+.box {
+    background-color: #fff;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-    border-radius: 1em;
+    border-radius: .5em;
+}
+
+.navbar {
+    padding-block: 2em;
+    margin-bottom: 4em;
+    background-color: #415a77;
+}
+
+.navbar a {
+    color: #fff !important;    
+}
+
+.transaction-container {
+    width: 100%;
+    margin-top: 2em;
+    /*margin-inline: auto;*/
+}
+
+.transaction-container p {
+    font-size: 1.5rem;
 }
 
 .edit-btn,
@@ -64,4 +81,28 @@ input[type="checkbox"].input-validation-error {
 .delete-btn:hover {
     opacity: 0.5;
 }
+
+.create-sales-order-cta {
+    text-align: right;
+}
+
+.customerId-container {
+    text-align: right;
+}
+
+.customerId-container form {
+    max-width: 300px;
+    margin-left: auto;
+}
+
+.clear-all-form-container form {
+    text-align: right;
+}
+
+.table-container .actions-col,
+.table-container .item-index {
+    width: 90px;
+}
+
+
 
