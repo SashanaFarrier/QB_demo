@@ -32,17 +32,15 @@ namespace MvcCodeFlowClientManual.Controllers
 
             if (ModelState.IsValid)
             {
-                var items = await ItemService.GetItems();
-                var itemFound = items.First(i => i.Name == item.ItemName);
+                var items = ItemService.GetItems();
+                //var itemFound = items.First(i => i.Name == item.ItemName);
 
-                if (itemFound != null)
-                {
                     SalesOrder newItem = new SalesOrder
                     {
                         OrderId = Guid.NewGuid().ToString(),
                         TransactionDate = DateTime.Now,
-                        ItemName = itemFound.Name,
-                        ItemNumber = itemFound.ItemId,
+                        ItemName = item.ItemName,
+                        ItemNumber = item.ItemNumber,
                         Description = item.Description,
                         Quantity = item.Quantity,
                         Rate = item.Rate,
@@ -53,8 +51,6 @@ namespace MvcCodeFlowClientManual.Controllers
                     //Orders.Add(newItem);
                     _salesOrderItems.AddItem(newItem);
                    
-                  
-                }
             }
             //return View("~/Views/App/Index.cshtml", Orders);
             return RedirectToAction("Index", "App");

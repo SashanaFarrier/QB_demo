@@ -3,16 +3,22 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="@Url.Action("CreateSalesOrder", "SalesOrder")">
-                <input type="hidden" name="OrderId"/>
+                <input type="hidden" name="OrderId" />
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Add New Order</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
                 </div>
                 <div class="modal-body">
                     <div class="col mb-3">
-                        <label for="item" class="form-label">Item</label>
-                        <div id="itemsContainer">
-                            <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
+                        <div id="items-container">
+                            <div class="categories">
+                                <label for="category">Item Category</label>
+                                <select id="category" class="form-select mb-3 category-list" aria-label="items list" name="ItemName">
+                                    <option selected value="Select">Select</option>
+                                </select>
+                            </div>
+                            <label for="item" class="form-label">Item</label>
+                            <select id="item" class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
                                 <option selected value="Select">Select</option>
                             </select>
                         </div>

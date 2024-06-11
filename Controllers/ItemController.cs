@@ -29,27 +29,10 @@ namespace MvcCodeFlowClientManual.Controllers
         {
             return null;
         }
-        //public ActionResult GetItems(string submitButton)
-        //{
-        //    var viewModel = new List<Item>();
 
-        //    switch(submitButton)
-        //    {
-        //        case "Connect to QuickBooks":
-        //            foreach(var i in ItemService.GetItems()) 
-        //            {
-        //                viewModel.Add(i);
-        //            }
-        //            //submitButton = "Close QuickBooks";
-        //            break;
-        //    }
-
-        //    return View("Index",viewModel); 
-        //}
-
-        public async Task<JsonResult> GetItems()
+        public JsonResult GetItems()
         {
-            var items = await ItemService.GetItems();
+            var items =  ItemService.GetItems();
             return Json(items, JsonRequestBehavior.AllowGet);
         }
 

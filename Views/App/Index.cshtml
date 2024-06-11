@@ -7,18 +7,18 @@
 
 }
 
-<div class="row justify-content-between mb-4">
-    <div class="col">
-        <h1 class="text-uppercase">Sales Order</h1>
+<div class="row flex-column text-center flex-md-row align-items-md-center justify-content-md-between mb-4">
+    <div class="col text-md-left">
+        <h1 class="text-uppercase mb-3 mb-md-0">Sales Order</h1>
     </div>
-    <div class="col create-sales-order-cta">
+    <div class="col create-sales-order-cta text-md-right">
         <form method="get" action="@Url.Action("GetItems", "Item")">
-            <button type="button" id="modal-btn" class="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create a new sales order</button>
+            <button type="button" id="modal-btn" class="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
         </form>
     </div>
 </div>
-<div class="row justify-content-between py-4 | box transaction-info">
-    <div class="col">
+<div class="row flex-column flex-md-row justify-content-md-between py-4 | box transaction-info">
+    <div class="col mb-3 mb-md-0">
         <form>
             <label for="date" class="form-label">Transaction Date</label>
             <input type="date" class="form-control" id="date">
@@ -40,7 +40,10 @@
 <div class="transaction-container">
     <div class="row justify-content-between align-items-center">
         <div class="col">
-            <p class="font-weight-bold text-uppercase m-0">Pending Order (@Model.Count)</p>
+            @{ string itemStr = "item";
+                if (Model.Count > 1) { itemStr = "items"; }
+            }
+            <p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span class="font-weight-light text-lowercase">(@Model.Count @itemStr)</span></p>
         </div>
         <div class="col customerId-container">
             <form>
@@ -56,7 +59,7 @@
     <div id="salesOrderContainer">
         @if (Model != null && Model.Count > 0)
         {
-            <div class="table-container box overflow-hidden mt-5">
+            <div class="table-responsive mt-5 | table-container box">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -102,7 +105,7 @@
         {
             <div class="row justify-content-between mt-5">
                 <div class="col submit-order-form-container">
-                    <form>
+                    <form method="post">
                         <button class="btn btn-primary">Submit Order</button>
                     </form>
                 </div>
@@ -119,6 +122,12 @@
 <script>
     const customerIdInput = document.getElementById("customerId");
     const customerNameInput = document.getElementById("customerName")
+
+    function modalToggle() {
+        $("#modal-btn").click(function () {
+            $("#staticBackdrop").modal('show');
+        });
+    }
 
     async function getCustomerJobs(jobsListContainer) {
         try {
@@ -141,7 +150,7 @@
                         const locations = customerJob.Locations;
                         locations.map(location => {
                             optionEl = document.createElement("option")
-                            optionEl.text = location
+                            optionEl.text = `${customerJob.Name}: ${location}`
                             optgroupEl.append(optionEl)
 
                         });
@@ -172,36 +181,28 @@
     function getCustomerId(customerJobs) {
         customerNameInput.addEventListener("change", (e) => {
             if (e.target.value == "Select")
-                customerIdInput.value = ""
+                customerIdInput.value = "";
+                customerJobs.filter(customerJob => {
+                    if (customerJob.Name == e.target.value) {
+                    customerIdInput.value = customerJob.CustomerListID;
+                    }
+            });
 
-            customerJobs.filter(customerJob => {
-                if (customerJob.Name == e.target.value) {
-                    customerIdInput.value = customerJob.CustomerListID
-                }
-            })
-
-        })
+        });
     }
 
-    async function getItems(itemsContainer) {
+    async function getItems() {
         try {
             const fetchUrl = fetch("/Item/GetItems");
             const response = await fetchUrl;
             const result = await response.json();
 
-            if (result.length > 0) {
-                const items = result.map(item => `<option>${item.Name}</option>`);
-                itemsContainer.querySelector(".items-list").innerHTML += items.join("");
-
-            } else {
-                itemsContainer.innerHTML = `<p>There are no items. Reconnect to QuickBooks and then try again.</p>`
-            }
+            return result
         }
         catch (error) {
-            itemsContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
+            //itemsContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
             console.log("Error fetching items: ", error);
         }
-        return itemsContainer;
     }
 
     async function editSalesOrderItem(orderId) {
@@ -231,9 +232,6 @@
 
     function updateModalContentHTML(itemOrder) {
         const modalContent = $("#staticBackdrop .modal-content");
-        //const itemsContainer = document.getElementById("itemsContainer");
-        //const options = getItems(itemsContainer)
-        //console.log(getItems(options))
         modalContent.empty();
         const form = `
                     <form method="post" action="@Url.Action("UpdateOrder", "SalesOrder")">
@@ -299,22 +297,51 @@
 
     }
 
-   function modalToggle() {
-      $("#modal-btn").click(function () {
-        $("#staticBackdrop").modal('show');
-      });
-   }
+    function addItemToHTMLDropdown() {
+        const itemsContainer = document.getElementById("items-container");
+        const categoriesContainer = itemsContainer.querySelector("#category");
+        const itemsArr = getItems();
+
+        let clickedFirst = "";
+
+        categoriesContainer.addEventListener("change", (e) => {
+
+            clickedFirst = "category dropdown";
+
+            itemsContainer.querySelector(".items-list").innerHTML = `<option>Select</option>`;
+
+            if (e.target.value != "Select") {
+                itemsArr.then(result => {
+                    for (const items in result) {
+                        result[items].filter(item => {
+                            if (item.Category == e.target.value) {
+                                let optionEl = `<option>${item.Name}</option>`
+                                itemsContainer.querySelector(".items-list").innerHTML += optionEl;
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function addItemCategoryToHTMLDropdown() {
+        const itemsContainer = document.getElementById("items-container");
+        const categoriesContainer = itemsContainer.querySelector("#category");
+
+        const categoriesArr = ["Service", "Inventory", "Non Inventory", "Inventory Assembly", "Fixed Asset", "Discount", "Payment", "Sales Tax", "Sales Tax Group", "Group", "SubTotal", "Other Charge"];
+
+        const categoryEl = categoriesArr.map(category => `<option>${category}</option>`);
+        categoriesContainer.innerHTML += categoryEl.join("");
+    }
 
     $(document).ready(function () {
         const jobsListContainer = document.getElementById("customerJobsList");
-        const itemsContainer = document.getElementById("itemsContainer");
-        const salesOrderContainer = document.getElementById("salesOrderContainer");
-        salesOrderContainer.classList.add("hidden")
-
         //modal to add new item
         modalToggle();
         getCustomerJobs(jobsListContainer);
-        getItems(itemsContainer);
 
+        addItemCategoryToHTMLDropdown();
+        addItemToHTMLDropdown()
     });
 </script>

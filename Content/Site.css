@@ -6,7 +6,8 @@ body {
     /*padding-top: 50px;*/
     padding-bottom: 20px;
     /*background-color: #1b263b;*/
-    background-color: #778da9;
+    /*background-color: #778da9;*/
+    background-color: #d8dfe7;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -68,9 +69,9 @@ input[type="checkbox"].input-validation-error {
     /*margin-inline: auto;*/
 }
 
-.transaction-container p {
+/*.transaction-container p {
     font-size: 1.5rem;
-}
+}*/
 
 .edit-btn,
 .delete-btn {
@@ -82,8 +83,12 @@ input[type="checkbox"].input-validation-error {
     opacity: 0.5;
 }
 
+#modal-btn {
+    /*background-color: #e0e1dd;*/
+}
+
 .create-sales-order-cta {
-    text-align: right;
+    /*text-align: right;*/
 }
 
 .customerId-container {
@@ -105,4 +110,8 @@ input[type="checkbox"].input-validation-error {
 }
 
 
+/*
+    .pending-order-text {
+        font-size: clamp(.7rem, .5rem + 1vw, 1rem);
+    }*/
 
