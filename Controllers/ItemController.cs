@@ -20,6 +20,18 @@ namespace MvcCodeFlowClientManual.Controllers
         {
             return View();
         }
+
+        public ActionResult AddItem(Item newItem)
+        {
+            Item item = new Item();
+            item.ItemId = newItem.ItemId;
+            item.Name = newItem.Name;
+            item.Description = newItem.Description;
+            item.Category = newItem.Category;
+            item.Quantity = newItem.Quantity;
+            item.Tax = newItem.Tax;
+            return RedirectToAction("Index", "App");
+        }
         
         public Item GetItemByName(string name)
         {

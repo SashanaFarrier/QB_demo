@@ -1,6 +1,6 @@
 ﻿
 @using MvcCodeFlowClientManual.Models
-@model List<SalesOrder>
+@model SalesOrder
 
 @{
     ViewBag.Title = "Home Page";
@@ -17,177 +17,181 @@
         </form>
     </div>
 </div>
-<div class="row flex-column flex-md-row justify-content-md-between py-4 | box transaction-info">
-    <div class="col mb-3 mb-md-0">
-        <form>
+@*<div class="col">
+    <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
+    </form>
+</div>*@
+<!-- Modal -->
+@Html.Partial("_AddItemModal")
+<form id="sales-order-form" method="post" action="@Url.Action("Submit", "App")">
+    <input type="hidden" name="SalesOrderId"/>
+    <div class="row flex-column flex-md-row justify-content-md-between py-4 | box transaction-info">
+        <div id="customerJobsList" class="col mb-3 mb-md-0">
+            <label for="customerJob" class="form-label">Customer Job</label>
+            <select id="customerJob" name="CustomerJob"class="form-select form-control | customer-list" aria-label="customer jobs list">
+                <option selected value="Select">Select</option>
+            </select>
+        </div>
+        <div class="col mb-3 mb-md-0">
             <label for="date" class="form-label">Transaction Date</label>
-            <input type="date" class="form-control" id="date">
-        </form>
-    </div>
-    <div class="col">
-        <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
-            <div id="customerJobsList">
-                <label for="customerName" class="form-label">Select Customer Job</label>
-
-                <select id="customerName" class="form-select form-control customer-list" aria-label="customer jobs list">
-                    <option selected value="Select">Select</option>
-                </select>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="transaction-container">
-    <div class="row justify-content-between align-items-center">
-        <div class="col">
-            @{ string itemStr = "item";
-                if (Model.Count > 1) { itemStr = "items"; }
-            }
-            <p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span class="font-weight-light text-lowercase">(@Model.Count @itemStr)</span></p>
+            <input type="date" name="TransactionDate" class="form-control" id="date">
         </div>
-        <div class="col customerId-container">
-            <form>
+    </div>
+
+    <div class="transaction-container">
+        <div class="row justify-content-between align-items-center">
+            <div class="col">
+                @*@{ string itemStr = "item";
+                    //if (Model.Count > 1) { itemStr = "items"; }
+                }*@
+                @*<p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span id="item-count" class="font-weight-light text-lowercase">(@Model.Count @itemStr)</span></p>*@
+            </div>
+            <div class="col customerId-container">
                 <label for="customerId" class="form-label" hidden>Customer ID</label>
-                <input type="text" class="form-control" id="customerId" placeholder="Customer ID" readonly>
-            </form>
+                <input type="text" name="CustomerId" class="form-control" id="customerId" placeholder="Customer ID" readonly>
+
+
+            </div>
+        </div>
+        <div id="salesOrderContainer">
+            @{double finalTotal = 0; }
+            @if (Model != null && Model.ItemList != null)
+            {
+                <div class="table-responsive mt-5 | table-container box">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Item Total</th>
+                                <th scope="col">Actions</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int count = 0;}
+
+                            @{
+                                for (int i = 0; i < Model.ItemList.Count; i++)
+                                {
+                                    Item order = Model.ItemList[i];
+
+                                    <tr>
+                                        <th class="item-index" scope="row">@i.</th>
+                                        <td>
+                                            <input type="text" name="ItemList[@i].Name" value="@order.Name" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="ItemList[@i].Description" value="@order.Description" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="ItemList[@i].Quantity" value="@order.Quantity" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="ItemList[@i].Rate" value="@order.Rate" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
+                                        </td>
+
+                                        <td>
+                                            @{ double total = order.Amount * order.Quantity;
+                                                finalTotal += total;
+                                            }
+                                            <input type="text" name="ItemList[@i].Total" value="@total" />
+                                        </td>
+
+                                        <td class="actions-col">
+
+                                            <div class="action-btns">
+                                                <a id="edit-btn">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </a>
+                                                <a class="delete-btn">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    count++;
+                                }
+                            }
+                        <tr>
+                            <td></td>
+                            <td class="font-weight-bold">Order Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="font-weight-bold">@finalTotal</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            @if (Model != null && Model.ItemList != null)
+            {
+                <div class="row justify-content-between mt-5">
+                    <div class="col submit-order-form-container">
+
+                        <button class="btn btn-primary">Submit Order</button>
+
+                    </div>
+                    <div class="col clear-all-form-container">
+                        @*<form method="post" action="@Url.Action("ClearOrders", "SalesOrder")">
+                                <button class="btn btn-danger">Clear All</button>
+                            </form>*@
+                    </div>
+                </div>
+            }
         </div>
     </div>
-    <!-- Modal -->
-
-    @Html.Partial("_AddItemModal")
-
-    <div id="salesOrderContainer">
-        @if (Model != null && Model.Count > 0)
-        {
-            <div class="table-responsive mt-5 | table-container box">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Item</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Rate</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{ int count = 0;}
-                        @foreach (var order in Model)
-                        {
-                            count++;
-                            <tr id="@order.OrderId">
-                                <th class="item-index" scope="row">@count.</th>
-                                <td>@order.ItemName</td>
-                                <td>@order.Description</td>
-                                <td>@order.Quantity</td>
-                                <td>@order.Amount</td>
-                                <td>@order.Rate</td>
-                                <td class="actions-col">
-                                    <div class="action-btns">
-                                        <a onclick="editSalesOrderItem('@order.OrderId')" class="edit-btn" data-id="@order.OrderId">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
-                                        <a class="delete-btn" onclick="deleteSalesOrderItem('@order.OrderId')" data-id="@order.OrderId">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-
-        @if (Model != null && Model.Count > 0)
-        {
-            <div class="row justify-content-between mt-5">
-                <div class="col submit-order-form-container">
-                    <form method="post">
-                        <button class="btn btn-primary">Submit Order</button>
-                    </form>
-                </div>
-                <div class="col clear-all-form-container">
-                    <form method="post" action="@Url.Action("ClearOrders", "SalesOrder")">
-                        <button class="btn btn-danger">Clear All</button>
-                    </form>
-                </div>
-            </div>
-        }
-    </div>
-</div>
+</form>
 
 <script>
-    const customerIdInput = document.getElementById("customerId");
-    const customerNameInput = document.getElementById("customerName")
-
+    
     function modalToggle() {
         $("#modal-btn").click(function () {
             $("#staticBackdrop").modal('show');
         });
+
     }
 
-    async function getCustomerJobs(jobsListContainer) {
+    async function getCustomerJobs() {
         try {
             const fetchUrl = fetch("/Customer/GetCustomerJobs");
             const response = await fetchUrl;
             const result = await response.json();
 
-            if (result.length > 0) {
-                //const customerJobs = result.map(customerJob => `<option>${customerJob.Name}</option>`);
-                result.map(customerJob => {
-                    if (customerJob.Locations.length > 0) {
-                        const optgroupEl = document.createElement("optgroup")
-                        optgroupEl.label = customerJob.Name
-
-                        let optionEl = document.createElement("option")
-                        optionEl.text = customerJob.Name
-
-                        optgroupEl.append(optionEl)
-
-                        const locations = customerJob.Locations;
-                        locations.map(location => {
-                            optionEl = document.createElement("option")
-                            optionEl.text = `${customerJob.Name}: ${location}`
-                            optgroupEl.append(optionEl)
-
-                        });
-                        jobsListContainer.querySelector(".customer-list").appendChild(optgroupEl)
-
-                    } else {
-                        const optionEl = document.createElement("option")
-                        optionEl.text = customerJob.Name
-                        jobsListContainer.querySelector(".customer-list").appendChild(optionEl)
-
-                    }
-
-                });
-
-                getCustomerId(result)
-                //jobsListContainer.querySelector(".customer-list").innerHTML += customerJobs.join("")
-            } else {
-                jobsListContainer.innerHTML = `<p>There are no customer jobs. Add new customer jobs to your QuickBooks company file and then try again</p>`
-            }
+            return result;
         }
         catch (error) {
-            jobsListContainer.innerHTML = `<p>Error fecting customer jobs. Please try again.</p>`
-            console.log("Error fetching customer jobs: ", error);
+            setTimeout(() => {
+                alert("Error fecting customer jobs. Please try again.");
+                console.log("Error fetching customer jobs: ", error);
+            }, 30000)
         }
-        return jobsListContainer;
+        //return jobsListContainer;
     }
 
-    function getCustomerId(customerJobs) {
+    function getCustomerId() {
+        const customerIdInput = document.getElementById("customerId");
+        const customerNameInput = document.getElementById("customerJob")
+        const customerJobs = getCustomerJobs();
         customerNameInput.addEventListener("change", (e) => {
             if (e.target.value == "Select")
                 customerIdInput.value = "";
-                customerJobs.filter(customerJob => {
+            customerJobs.then(data => {
+                data.filter(customerJob => {
                     if (customerJob.Name == e.target.value) {
-                    customerIdInput.value = customerJob.CustomerListID;
+                        customerIdInput.value = customerJob.CustomerListID;
                     }
-            });
-
+                });
+            })
         });
     }
 
@@ -228,6 +232,52 @@
 
             alert('An error occurred while retrieving item details. Please try again later.');
         }
+    }
+
+
+    //functions to render html 
+    function renderCustomerJobsHTML() {
+        const jobsListContainer = document.getElementById("customerJobsList");
+        const customerJobs = getCustomerJobs();
+
+        customerJobs.then(result => {
+            if (result.length > 0) {
+                //const customerJobs = result.map(customerJob => `<option>${customerJob.Name}</option>`);
+                result.map(customerJob => {
+                    if (customerJob.Locations.length > 0) {
+                        const optgroupEl = document.createElement("optgroup")
+                        optgroupEl.label = customerJob.Name
+
+                        let optionEl = document.createElement("option")
+                        optionEl.text = customerJob.Name
+
+                        optgroupEl.append(optionEl)
+
+                        const locations = customerJob.Locations;
+                        locations.map(location => {
+                            optionEl = document.createElement("option")
+                            optionEl.text = `${customerJob.Name}: ${location}`
+                            optgroupEl.append(optionEl)
+
+                        });
+                        jobsListContainer.querySelector(".customer-list").appendChild(optgroupEl)
+
+                    } else {
+                        const optionEl = document.createElement("option")
+                        optionEl.text = customerJob.Name
+                        jobsListContainer.querySelector(".customer-list").appendChild(optionEl)
+
+                    }
+
+                });
+
+                //jobsListContainer.querySelector(".customer-list").innerHTML += customerJobs.join("")
+            } else {
+                setTimeout(() => {
+                    alert("There are no customer jobs. Add new customer jobs to your QuickBooks company file and then try again")
+                }, 30000)
+            }
+        })
     }
 
     function updateModalContentHTML(itemOrder) {
@@ -284,11 +334,19 @@
                 throw new Error(`Error deleting item: ${response.statusText}`)
             }
             const result = await response.json();
-            console.log(result)
-            let el
+            //console.log(result)
             if (result) {
-                el = document.getElementById(result.deleteItem)
-                el.remove()
+                let deletedItem = document.getElementById(result.deleteItem);
+                const itemCountEl = document.querySelector("#item-count");
+                const tableEl = document.querySelector(".table-container");
+                deletedItem.remove();
+
+                if (result.data.length == 0) {
+                    itemCountEl.textContent = "(0 item)";
+                    tableEl.style.display = "none";
+                } else {
+                   itemCountEl.textContent = `(${result.data.length} item)`;
+                }
             }
 
         } catch (error) {
@@ -297,19 +355,29 @@
 
     }
 
-    function addItemToHTMLDropdown() {
+    function renderItemsHTML() {
         const itemsContainer = document.getElementById("items-container");
-        const categoriesContainer = itemsContainer.querySelector("#category");
+        const categoriesDropdown = itemsContainer.querySelector("#category-dropdown");
+        const itemsDropdown = itemsContainer.querySelector("#item-dropdown");
         const itemsArr = getItems();
 
-        let clickedFirst = "";
+        //add items to items dropdown by default
+        const itemsDispay = () => {
+            itemsArr.then(result => {
+                for (const items in result) {
+                    result[items].map(item => {
+                        let optionEl = `<option>${item.Name}</option>`
+                        itemsContainer.querySelector(".items-list").innerHTML += optionEl;
+                    })
+                }
+            });
+        }
 
-        categoriesContainer.addEventListener("change", (e) => {
+        itemsDispay();
 
+        categoriesDropdown.addEventListener("change", (e) => {
             clickedFirst = "category dropdown";
-
-            itemsContainer.querySelector(".items-list").innerHTML = `<option>Select</option>`;
-
+            itemsDropdown.innerHTML = `<option>Select</option>`;
             if (e.target.value != "Select") {
                 itemsArr.then(result => {
                     for (const items in result) {
@@ -321,27 +389,100 @@
                         });
                     }
                 });
+            } else {
+                itemsDispay();
             }
         });
     }
 
-    function addItemCategoryToHTMLDropdown() {
+    function renderItemsCategoryHTML() {
         const itemsContainer = document.getElementById("items-container");
-        const categoriesContainer = itemsContainer.querySelector("#category");
+        const categoriesDropdown = itemsContainer.querySelector("#category-dropdown");
 
         const categoriesArr = ["Service", "Inventory", "Non Inventory", "Inventory Assembly", "Fixed Asset", "Discount", "Payment", "Sales Tax", "Sales Tax Group", "Group", "SubTotal", "Other Charge"];
 
         const categoryEl = categoriesArr.map(category => `<option>${category}</option>`);
-        categoriesContainer.innerHTML += categoryEl.join("");
+        categoriesDropdown.innerHTML += categoryEl.join("");
+    }
+
+
+    //submitting the order
+
+    async function submitSalesOrder() {
+        const form = document.getElementById("sales-order-form");
+        const items = Array.from(form.getElementsByTagName("tr"))
+        const itemDictionary = {}
+
+        items.forEach(item => {
+            const td = Array.from(item.getElementsByTagName("td"))
+            console.log(td[0])
+            if (td.length > 0) {
+                td.map(el => {
+                    console.log(el[0]) 
+                })
+            }
+        })
+       
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+            const formData = new FormData(form);
+            console.log(formData)
+            fetch('/App/Submit', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        })
+       
+    }
+
+    function addRateAndAmount() {
+        const modal = document.getElementById("staticBackdrop")
+        const taxEl = document.getElementById("tax");
+        const itemEl = document.getElementById("item-dropdown");
+        const itemCategoryEl = document.getElementById("category-dropdown")
+       
+        let tax;
+        modal.addEventListener("click", (e) => {
+            let category = itemCategoryEl.value.replace(/\s+/g, "");
+            category = category[0].toLowerCase() + category.slice(1)
+            
+            if (itemEl.value != "Select" && itemCategoryEl.value != "Select") {
+                const items = getItems()
+                items.then(item => {
+                    const itemSelected = item[category].filter(i => i.Name == itemEl.value)
+                    //fix this
+                    itemSelected[0].Tax ? tax = itemSelected[0].Tax : undefined
+
+                    if (tax != undefined) {
+                        taxEl.value = tax
+                    }
+                })
+            }
+
+            
+        })
+       
+        
     }
 
     $(document).ready(function () {
-        const jobsListContainer = document.getElementById("customerJobsList");
+     
         //modal to add new item
         modalToggle();
-        getCustomerJobs(jobsListContainer);
 
-        addItemCategoryToHTMLDropdown();
-        addItemToHTMLDropdown()
+        getItems();
+        renderItemsCategoryHTML();
+        renderItemsHTML()
+
+        renderCustomerJobsHTML()
+        getCustomerId();
+
+
+        addRateAndAmount();
+       
     });
+
 </script>

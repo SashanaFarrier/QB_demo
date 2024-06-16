@@ -206,21 +206,28 @@ namespace MvcCodeFlowClientManual.Services
             return (itemDictionary);    
         }
 
+        
         private Item serviceItem(IItemServiceRet itemService)
         {
             
             string itemId = itemService.ListID != null ? itemService.ListID.GetValue(): null;
             string itemName = itemService.FullName.GetValue();
+          
+            string tax = itemService.SalesTaxCodeRef != null && itemService.SalesTaxCodeRef.FullName != null ? itemService.SalesTaxCodeRef.FullName.GetValue() : null;
+            double orPrice = itemService.ORSalesPurchase != null && itemService.ORSalesPurchase.SalesOrPurchase != null && itemService.ORSalesPurchase.SalesOrPurchase.ORPrice != null ? itemService.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0 ;
             
-            string tax = itemService.SalesTaxCodeRef.FullName != null ? itemService.SalesTaxCodeRef.FullName.GetValue() : null;
-            //double orPrice = itemService.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? itemService.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0 ;
+            string description = itemService.ORSalesPurchase != null &&
+                itemService.ORSalesPurchase.SalesOrPurchase != null && itemService.ORSalesPurchase.SalesOrPurchase.Desc
+               != null ? itemService.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
             
-            //string description = itemService.ORSalesPurchase.SalesOrPurchase.Desc
-               // != null ? itemService.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
+            
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            item.Category = itemService.ClassRef != null && itemService.FullName != null ? itemService.ClassRef.FullName.GetValue() : "Service";
+            item.Description = description;
+            item.Category = "Service";
+            item.Tax = tax;
+            item.Amount = orPrice;
             
             return item;    
            
@@ -232,17 +239,19 @@ namespace MvcCodeFlowClientManual.Services
 
             string itemId = nonInventoryItem.ListID != null ? nonInventoryItem.ListID.GetValue() : null;
             string itemName = nonInventoryItem.FullName.GetValue();
+            string tax = nonInventoryItem.SalesTaxCodeRef != null && nonInventoryItem.SalesTaxCodeRef.FullName != null ? nonInventoryItem.SalesTaxCodeRef.FullName.GetValue() : null;
+            double orPrice = nonInventoryItem.ORSalesPurchase != null && nonInventoryItem.ORSalesPurchase.SalesOrPurchase != null && nonInventoryItem.ORSalesPurchase.SalesOrPurchase.ORPrice != null && nonInventoryItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? nonInventoryItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0;
 
-            string tax = nonInventoryItem.SalesTaxCodeRef.FullName != null ? nonInventoryItem.SalesTaxCodeRef.FullName.GetValue() : null;
-            //double orPrice = nonInventoryItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? nonInventoryItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0;
+            string description = nonInventoryItem.ORSalesPurchase != null && nonInventoryItem.ORSalesPurchase.SalesOrPurchase != null && nonInventoryItem.ORSalesPurchase.SalesOrPurchase.Desc
+                != null ? nonInventoryItem.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
 
-            //string description = nonInventoryItem.ORSalesPurchase.SalesOrPurchase.Desc
-               // != null ? nonInventoryItem.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            item.Category = nonInventoryItem.ClassRef != null && nonInventoryItem.ClassRef.FullName != null ? nonInventoryItem.ClassRef.FullName.GetValue() : "NonInventory";
-
+            item.Description = description;
+            item.Category = "Non Inventory";
+            item.Tax = tax;
+            item.Amount = orPrice;
             return item;
 
 
@@ -253,17 +262,18 @@ namespace MvcCodeFlowClientManual.Services
             string itemId = otherChargeItem.ListID != null ? otherChargeItem.ListID.GetValue() : null;
             string itemName = otherChargeItem.FullName.GetValue();
 
-            //string tax = otherChargeItem.SalesTaxCodeRef.FullName != null ? otherChargeItem.SalesTaxCodeRef.FullName.GetValue() : null;
-            //double orPrice = otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0;
+            string tax = otherChargeItem.SalesTaxCodeRef != null && otherChargeItem.SalesTaxCodeRef.FullName != null ? otherChargeItem.SalesTaxCodeRef.FullName.GetValue() : null;
+            double orPrice = otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0;
 
-            //string description = otherChargeItem.ORSalesPurchase.SalesOrPurchase.Desc
-            //    != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
+            string description = otherChargeItem.ORSalesPurchase != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase.Desc
+            != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = otherChargeItem.ClassRef != null && otherChargeItem.ClassRef.FullName != null ? otherChargeItem.ClassRef.FullName.GetValue() : "Other Charge";
-            //item.Tax = tax;
+            item.Description = description;
+            item.Category = "Other Charge";
+            item.Tax = tax;
+            item.Amount = orPrice;
             return item;
         }
 
@@ -271,16 +281,17 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = inventoryItem.ListID != null ? inventoryItem.ListID.GetValue() : null;
             string itemName = inventoryItem.FullName.GetValue();
-            //string tax = inventoryItem.SalesTaxCodeRef.FullName != null ? inventoryItem.SalesTaxCodeRef.FullName.GetValue() : null;
-            //double orPrice = inventoryItem.SalesPrice != null ? inventoryItem.SalesPrice.GetValue() : 0;
-            //string description = inventoryItem.SalesDesc != null ? inventoryItem.SalesDesc.GetValue() : null;
+            string tax = inventoryItem.SalesTaxCodeRef != null && inventoryItem.SalesTaxCodeRef.FullName != null ? inventoryItem.SalesTaxCodeRef.FullName.GetValue() : null;
+            double orPrice = inventoryItem.SalesPrice != null ? inventoryItem.SalesPrice.GetValue() : 0;
+            string description = inventoryItem.SalesDesc != null ? inventoryItem.SalesDesc.GetValue() : null;
                
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = inventoryItem.ClassRef != null && inventoryItem.ClassRef.FullName != null ? inventoryItem.ClassRef.FullName.GetValue() : "Inventory";
-            //item.Tax = tax;
+            item.Description = description;
+            item.Category = "Inventory";
+            item.Tax = tax;
+            item.Amount = orPrice;
             return item;
         }
 
@@ -288,16 +299,17 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = inventoryAssemblyItem.ListID != null ? inventoryAssemblyItem.ListID.GetValue() : null;
             string itemName = inventoryAssemblyItem.FullName.GetValue();
-            //string tax = inventoryAssemblyItem.SalesTaxCodeRef.FullName != null ? inventoryAssemblyItem.SalesTaxCodeRef.FullName.GetValue() : null;
-            //double orPrice = inventoryAssemblyItem.SalesPrice != null ? inventoryAssemblyItem.SalesPrice.GetValue() : 0;
-            //string description = inventoryAssemblyItem.SalesDesc != null ? inventoryAssemblyItem.SalesDesc.GetValue() : null;
+            string tax = inventoryAssemblyItem.SalesTaxCodeRef != null && inventoryAssemblyItem.SalesTaxCodeRef.FullName != null ? inventoryAssemblyItem.SalesTaxCodeRef.FullName.GetValue() : null;
+            double orPrice = inventoryAssemblyItem.SalesPrice != null ? inventoryAssemblyItem.SalesPrice.GetValue() : 0;
+            string description = inventoryAssemblyItem.SalesDesc != null ? inventoryAssemblyItem.SalesDesc.GetValue() : null;
 
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = inventoryAssemblyItem.ClassRef != null && inventoryAssemblyItem.ClassRef.FullName != null ? inventoryAssemblyItem.ClassRef.FullName.GetValue() : "Inventory Assembly";
-            //item.Tax = tax;
+            item.Description = description;
+            item.Category = "Inventory Assembly";
+            item.Tax = tax;
+            item.Amount = orPrice;
             return item;
         }
 
@@ -305,15 +317,15 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = fixedAssetItem.ListID != null ? fixedAssetItem.ListID.GetValue() : null;
             string itemName = fixedAssetItem.Name.GetValue();
-            //double salesPrice = fixedAssetItem.FixedAssetSalesInfo.SalesPrice != null ? fixedAssetItem.FixedAssetSalesInfo.SalesPrice.GetValue() : 0;
-            //string description = fixedAssetItem.FixedAssetSalesInfo.SalesDesc != null ? fixedAssetItem.FixedAssetSalesInfo.SalesDesc.GetValue() : null;
+            double salesPrice = fixedAssetItem.FixedAssetSalesInfo != null && fixedAssetItem.FixedAssetSalesInfo.SalesPrice != null ? fixedAssetItem.FixedAssetSalesInfo.SalesPrice.GetValue() : 0;
+            string description = fixedAssetItem.FixedAssetSalesInfo != null && fixedAssetItem.FixedAssetSalesInfo.SalesDesc != null ? fixedAssetItem.FixedAssetSalesInfo.SalesDesc.GetValue() : null;
 
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = fixedAssetItem.ClassRef != null && fixedAssetItem.ClassRef.FullName != null ? fixedAssetItem.ClassRef.FullName.GetValue() : "Fixed Asset";
-
+            item.Description = description;
+            item.Category = "Fixed Asset";
+            item.Amount = salesPrice;
             return item;
         }
 
@@ -321,13 +333,14 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = subTotalItem.ListID != null ? subTotalItem.ListID.GetValue() : null;
             string itemName = subTotalItem.Name.GetValue();
-            //string description = subTotalItem.ItemDesc != null ? subTotalItem.ItemDesc.GetValue() : null;
-
+            string description = subTotalItem.ItemDesc != null ? subTotalItem.ItemDesc.GetValue() : null;
+        
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = "SubTotal"; 
+            item.Description = description;
+            //ItemCategoryHelper.ParseEnum<ItemCategory>(otherChargeItem.ClassRef.FullName.GetValue())
+            item.Category = "Sub Total";
 
             return item;
         }
@@ -336,16 +349,17 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = discountItem.ListID != null ? discountItem.ListID.GetValue() : null;
             string itemName = discountItem.FullName.GetValue();
-            //double discountRate = discountItem.ORDiscountRate.DiscountRate != null ? discountItem.ORDiscountRate.DiscountRate.GetValue() : 0;
-            //string description = discountItem.ItemDesc != null ? discountItem.ItemDesc.GetValue() : null;
-            //string tax = discountItem.SalesTaxCodeRef.FullName != null ? discountItem.SalesTaxCodeRef.FullName.GetValue() : null;
+            double discountRate = discountItem.ORDiscountRate != null && discountItem.ORDiscountRate.DiscountRate != null ? discountItem.ORDiscountRate.DiscountRate.GetValue() : 0;
+            string description = discountItem.ItemDesc != null ? discountItem.ItemDesc.GetValue() : null;
+            string tax = discountItem.SalesTaxCodeRef != null && discountItem.SalesTaxCodeRef.FullName != null ? discountItem.SalesTaxCodeRef.FullName.GetValue() : null;
            
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = discountItem.ClassRef != null && discountItem.ClassRef.FullName != null ? discountItem.ClassRef.FullName.GetValue() : "Discount";
-
+            item.Description = description;
+            item.Category = "Discount";
+            item.Tax = tax;
+            item.Rate = discountRate;
             return item;
         }
 
@@ -355,13 +369,13 @@ namespace MvcCodeFlowClientManual.Services
             string itemName = paymentItem.Name.GetValue();
             //string depositAccount = paymentItem.DepositToAccountRef.FullName != null ? paymentItem.DepositToAccountRef.FullName.GetValue() : null;
             //string paymentMethod = paymentItem.PaymentMethodRef.FullName != null ? paymentItem.PaymentMethodRef.FullName.GetValue() : null;
-            //string description = paymentItem.ItemDesc != null ? paymentItem.ItemDesc.GetValue() : null;
+            string description = paymentItem.ItemDesc != null ? paymentItem.ItemDesc.GetValue() : null;
 
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = paymentItem.ClassRef != null && paymentItem.ClassRef.FullName != null ? paymentItem.ClassRef.FullName.GetValue() : "Payment";
+            item.Description = description;
+            item.Category = "Payment";
 
             return item;
         }
@@ -370,16 +384,16 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = salesTaxItem.ListID != null ? salesTaxItem.ListID.GetValue() : null;
             string itemName = salesTaxItem.Name.GetValue();
-            //string description = salesTaxItem.ItemDesc != null ? salesTaxItem.ItemDesc.GetValue() : null;
-            //double tax = salesTaxItem.TaxRate != null ? salesTaxItem.TaxRate.GetValue() : 0;
+            string description = salesTaxItem.ItemDesc != null ? salesTaxItem.ItemDesc.GetValue() : null;
+            double tax = salesTaxItem.TaxRate != null ? salesTaxItem.TaxRate.GetValue() : 0;
             //string taxVendorRef = salesTaxItem.TaxVendorRef.FullName != null ? salesTaxItem.TaxVendorRef.FullName.GetValue() : null;
             
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = salesTaxItem.ClassRef != null && salesTaxItem.ClassRef.FullName != null ? salesTaxItem.ClassRef.FullName.GetValue() : "Sales Tax";
-
+            item.Description = description;
+            item.Category = "Sales Tax";
+            item.Tax = tax.ToString();
             return item;
         }
 
@@ -387,15 +401,15 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = salesTaxGroup.ListID != null ? salesTaxGroup.ListID.GetValue() : null;
             string itemName = salesTaxGroup.Name.GetValue();
-            //string description = salesTaxGroup.ItemDesc != null ? salesTaxGroup.ItemDesc.GetValue() : null;
+            string description = salesTaxGroup.ItemDesc != null ? salesTaxGroup.ItemDesc.GetValue() : null;
 
             IQBBaseRefList salesTaxGroupList = salesTaxGroup.ItemSalesTaxRefList;
 
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
-            item.Category = "SalesTaxGroup";
+            item.Description = description;
+            item.Category = "Sales Tax Group";
 
             return item;
         }
@@ -404,14 +418,14 @@ namespace MvcCodeFlowClientManual.Services
         {
             string itemId = groupItem.ListID != null ? groupItem.ListID.GetValue() : null;
             string itemName = groupItem.Name.GetValue();
-            //string description = groupItem.ItemDesc != null ? groupItem.ItemDesc.GetValue() : null;
+            string description = groupItem.ItemDesc != null ? groupItem.ItemDesc.GetValue() : null;
 
             IItemGroupLineList groupItemsList = groupItem.ItemGroupLineList;
 
             Item item = new Item();
             item.ItemId = itemId;
             item.Name = itemName;
-            //item.Description = description;
+            item.Description = description;
             item.Category = "Group";
 
             return item;

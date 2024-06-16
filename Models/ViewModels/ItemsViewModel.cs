@@ -17,6 +17,6 @@ namespace MvcCodeFlowClientManual.ViewModels
             public List<Item> Items { get; set; }
       
 
-        //public List<Item> Items { get; set; }
+        //public List<Item> ItemDictionary { get; set; }
     }
 }

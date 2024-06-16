@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using MvcCodeFlowClientManual.Data;
+using MvcCodeFlowClientManual.Models;
 using Unity.Mvc4;
 
 namespace MvcCodeFlowClientManual
@@ -23,7 +24,7 @@ namespace MvcCodeFlowClientManual
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
-            container.RegisterType<ISalesOrdersList, SalesOrders>();
+            container.RegisterType<SalesOrder>();
 
       // e.g. container.RegisterType<ITestService, TestService>();    
       RegisterTypes(container);

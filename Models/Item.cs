@@ -14,7 +14,10 @@ namespace MvcCodeFlowClientManual.Models
         public string Description { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
+        public double Amount { get; set; }
+        public double Rate { get; set; }
         public string Tax { get; set; }
+
         public Item(string id, string name, string desc, List<object> items)
         {
             

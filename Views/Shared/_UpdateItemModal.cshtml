@@ -1,0 +1,45 @@
+﻿@using MvcCodeFlowClientManual.Models
+@model Item
+
+<div class="modal fade" id="updateItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("UpdateItem", "App")">
+                <div class="modal-header">
+                    <input type="hidden" name="Name" />
+                    <h5 class="modal-title" id="updateItemModalLabel">Edit item info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col mb-3">
+                        <label for="itemCategory" class="form-label">Category</label>
+                        <input name="Category" type="text" class="form-control" id="itemCategory" value="@Model.Category" readonly />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="itemName" class="form-label">Item</label>
+                        <input name="Name" type="text" class="form-control" id="itemName" value="@Model.Name" readonly />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="desc" class="form-label">Description</label>
+                        <input name="Description" type="text" class="form-control" id="desc" readonly value="@Model.Description" />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="qty" class="form-label">Quantity</label>
+                        <input name="Quantity" type="text" class="form-control" id="qty" value="@Model.Quantity" />
+                    </div>
+                    <div class="col mb-3">
+                        <label for="amt" class="form-label">Cost</label>
+                        <input name="Cost" type="text" class="form-control" id="amt" value="@Model.Cost" />
+                    </div>
+                    @*<div class="col mb-3">
+            <label for="rate" class="form-label">Rate</label>
+            <input name="Rate" type="text" class="form-control" id="rate" />
+        </div>*@
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

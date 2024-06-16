@@ -20,6 +20,9 @@ namespace MvcCodeFlowClientManual
                 "App/Error/{errMsg}",
                 new { controller = "App", action = "Error", errMsg = UrlParameter.Optional }
             );
+
+            
+
         }
     }
 }
