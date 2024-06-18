@@ -14,21 +14,24 @@
         <div class="container">
             <div class="navbar-header">
                 @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>*@
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>*@
                 @Html.ActionLink("Sales Order", "Index", "App", null, new { @class = "navbar-brand" })
                 @Html.ActionLink("Invoices", "Index", "Item", null, new { @class = "navbar-brand" })
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container">
         @RenderBody()
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/qb/items.js")
+    @Scripts.Render("~/Scripts/qb/customers.js")
+    @Scripts.Render("~/Scripts/qb/salesOrder.js")
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -32,11 +32,7 @@ namespace MvcCodeFlowClientManual.Controllers
             item.Tax = newItem.Tax;
             return RedirectToAction("Index", "App");
         }
-        
-        public Item GetItemByName(string name)
-        {
-            return null;
-        }
+
         public Item GetItemById(string id)
         {
             return null;

@@ -24,7 +24,7 @@ namespace MvcCodeFlowClientManual.Services
         //We will have to change the object name from Item as a current object within the qb lib already has that name, so there's a conflict
         //public IList<Models.Item> AllItemsList = new List<Models.Item>();
         List<object> SubItems = new List<object>();
-      
+       
         public Dictionary<string, List<Item>> GetItems()
         {
             Dictionary<string, List<Item>> itemDictionary = new Dictionary<string, List<Item>>();
@@ -173,6 +173,7 @@ namespace MvcCodeFlowClientManual.Services
                                 IItemSalesTaxGroupRet itemService = itemsList.GetAt(i).ItemSalesTaxGroupRet;
                                 Item item = salesTaxGroupItem(itemService);
                                 salesTaxGroupItems.Add(item);
+
                             }
 
                             if (itemsList.GetAt(i).ItemGroupRet != null)
@@ -263,7 +264,7 @@ namespace MvcCodeFlowClientManual.Services
             string itemName = otherChargeItem.FullName.GetValue();
 
             string tax = otherChargeItem.SalesTaxCodeRef != null && otherChargeItem.SalesTaxCodeRef.FullName != null ? otherChargeItem.SalesTaxCodeRef.FullName.GetValue() : null;
-            double orPrice = otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0;
+            double orPrice = otherChargeItem.ORSalesPurchase != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.ORPrice.Price.GetValue() : 0;
 
             string description = otherChargeItem.ORSalesPurchase != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase != null && otherChargeItem.ORSalesPurchase.SalesOrPurchase.Desc
             != null ? otherChargeItem.ORSalesPurchase.SalesOrPurchase.Desc.GetValue() : null;
@@ -402,8 +403,13 @@ namespace MvcCodeFlowClientManual.Services
             string itemId = salesTaxGroup.ListID != null ? salesTaxGroup.ListID.GetValue() : null;
             string itemName = salesTaxGroup.Name.GetValue();
             string description = salesTaxGroup.ItemDesc != null ? salesTaxGroup.ItemDesc.GetValue() : null;
-
-            IQBBaseRefList salesTaxGroupList = salesTaxGroup.ItemSalesTaxRefList;
+            
+            //IQBBaseRefList salesTaxGroupList = salesTaxGroup.ItemSalesTaxRefList;
+            //string[] taxGroupList = new string[salesTaxGroupList.Count];
+            //for (int i = 0; i < salesTaxGroupList.Count; i++) 
+            //{
+            //    taxGroupList[i] = salesTaxGroupList.GetAt(i).FullName.GetValue();
+            //}
 
             Item item = new Item();
             item.ItemId = itemId;
@@ -413,7 +419,6 @@ namespace MvcCodeFlowClientManual.Services
 
             return item;
         }
-
         private Item groupItem(IItemGroupRet groupItem)
         {
             string itemId = groupItem.ListID != null ? groupItem.ListID.GetValue() : null;
@@ -430,5 +435,6 @@ namespace MvcCodeFlowClientManual.Services
 
             return item;
         }
+
     }
 }

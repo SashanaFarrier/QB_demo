@@ -17,6 +17,7 @@ namespace MvcCodeFlowClientManual.Controllers
 {
     public class AppController : Controller
     {
+        ItemService ItemService = new ItemService();
         //private SalesOrder _salesOrderItems;
         static SalesOrder _salesOrderItems = new SalesOrder();
         public IList<Customer> customers = new List<Customer>();
@@ -113,15 +114,19 @@ namespace MvcCodeFlowClientManual.Controllers
 
             if (!ModelState.IsValid)
             {
-                return null;
+                //return a message to user
+                return RedirectToAction("Index", "App");
             }
 
             //if(_salesOrderItems.SalesOrderId == null)
             //{
             //    _salesOrderItems.SalesOrderId = Guid.NewGuid().ToString();
             //}
-            
+
             //Items.Add(newItem);
+
+            string id = ItemService.GetItems().Values.SelectMany(item => item).ToList().Find(x => x.Name == newItem.Name).ItemId;
+            newItem.ItemId = id;
 
             _salesOrderItems.ItemList.Add(newItem);
 
@@ -129,12 +134,13 @@ namespace MvcCodeFlowClientManual.Controllers
         }
 
         [HttpGet]
-        public ActionResult UpdateItem(string id)
+        public JsonResult UpdateItem(string id)
         {
-            //List<Item> items = _salesOrderItems.ItemDictionary.Values.SelectMany(itemList =>  itemList).ToList();
+            Item item = _salesOrderItems.ItemList.Find(x => x.ItemId == id);
+           // List<Item> items = _salesOrderItems.ItemDictionary.Values.SelectMany(itemList =>  itemList).ToList();
                 
                //Item item = items.Find(x => x.Name == id);
-            return PartialView("~/Views/Shared/_UpdateItemModal.cshtml");
+            return Json(item, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -173,10 +179,24 @@ namespace MvcCodeFlowClientManual.Controllers
             return RedirectToAction("~/Views/Shared/_UpdateItemModal");
         }
 
-        [HttpDelete]
-        public ActionResult DeleteItem(int id)
+        //[HttpDelete]
+        //public ActionResult DeleteItem(int id)
+        //{
+        //    return RedirectToAction("Index", "App");
+        //}
+
+        [HttpPost]
+        public JsonResult DeleteItem(string id)
         {
-            return RedirectToAction("Index", "App");
+            //var item = Orders.Find(i => i.OrderId == id);
+            var item = _salesOrderItems.ItemList.Find(x => x.ItemId == id);
+            if (item == null)
+            {
+                return Json(new { message = "Item not found" }, JsonRequestBehavior.AllowGet);
+            }
+            //Orders.Remove(item);
+            _salesOrderItems.ItemList.Remove(item);
+            return Json(new { data = _salesOrderItems.ItemList, deletedItem = item.ItemId });
         }
 
         [HttpPost]

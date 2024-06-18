@@ -12,207 +12,222 @@
         <h1 class="text-uppercase mb-3 mb-md-0">Sales Order</h1>
     </div>
     <div class="col create-sales-order-cta text-md-right">
-        <form method="get" action="@Url.Action("GetItems", "Item")">
-            <button type="button" id="modal-btn" class="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
-        </form>
+        @*<form method="get" action="@Url.Action("GetItems", "Item")">
+                <button type="button" id="add-btn" class="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
+            </form>*@
+        <button type="button" id="add-btn" class="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item</button>
     </div>
 </div>
+
 @*<div class="col">
-    <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
-    </form>
-</div>*@
+        <form method="get" action="@Url.Action("GetCustomerJobs", "Customer")">
+        </form>
+    </div>*@
 <!-- Modal -->
 @Html.Partial("_AddItemModal")
-<form id="sales-order-form" method="post" action="@Url.Action("Submit", "App")">
-    <input type="hidden" name="SalesOrderId"/>
-    <div class="row flex-column flex-md-row justify-content-md-between py-4 | box transaction-info">
-        <div id="customerJobsList" class="col mb-3 mb-md-0">
-            <label for="customerJob" class="form-label">Customer Job</label>
-            <select id="customerJob" name="CustomerJob"class="form-select form-control | customer-list" aria-label="customer jobs list">
-                <option selected value="Select">Select</option>
-            </select>
-        </div>
-        <div class="col mb-3 mb-md-0">
-            <label for="date" class="form-label">Transaction Date</label>
-            <input type="date" name="TransactionDate" class="form-control" id="date">
-        </div>
-    </div>
 
-    <div class="transaction-container">
-        <div class="row justify-content-between align-items-center">
-            <div class="col">
-                @*@{ string itemStr = "item";
-                    //if (Model.Count > 1) { itemStr = "items"; }
-                }*@
-                @*<p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span id="item-count" class="font-weight-light text-lowercase">(@Model.Count @itemStr)</span></p>*@
+<div class="form-container">
+    <form id="sales-order-form" method="post" action="@Url.Action("Submit", "App")">
+        @*<input type="hidden" name="SalesOrderId"/>*@
+        <div class="row flex-column flex-md-row justify-content-md-between py-4 mx-0 | box transaction-info">
+            <div id="customerJobsList" class="col mb-3 mb-md-0">
+                <label for="customerJob" class="form-label">Customer</label>
+                <select id="customerJob" name="CustomerJob" class="form-select form-control | customer-list" aria-label="customer jobs list">
+                    <option selected value="Select">Select</option>
+                </select>
             </div>
-            <div class="col customerId-container">
-                <label for="customerId" class="form-label" hidden>Customer ID</label>
-                <input type="text" name="CustomerId" class="form-control" id="customerId" placeholder="Customer ID" readonly>
-
-
+            <div id="transactionDate" class="col mb-3 mb-md-0">
+                <label for="date" class="form-label">Transaction Date</label>
+                <input type="date" name="TransactionDate" class="form-control" id="date">
             </div>
         </div>
-        <div id="salesOrderContainer">
-            @{double finalTotal = 0; }
-            @if (Model != null && Model.ItemList != null)
-            {
-                <div class="table-responsive mt-5 | table-container box">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">No.</th>
-                                <th scope="col">Item</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Rate</th>
-                                <th scope="col">Item Total</th>
-                                <th scope="col">Actions</th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{ int count = 0;}
+        <div class="transaction-container">
+            <div class="container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col">
+                        @{ string itemStr = "item";
+                            if (Model.ItemList.Count > 1) { itemStr = "items"; }
+                        }
+                        <p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span id="item-count" class="font-weight-light text-lowercase">(@Model.ItemList.Count @itemStr)</span></p>
+                    </div>
+                    @*<div class="col customerId-container">
+                            <label for="customerId" class="form-label" hidden>Customer ID</label>
+                            <input type="text" name="CustomerId" class="form-control" id="customerId" placeholder="Customer ID" readonly>
 
-                            @{
-                                for (int i = 0; i < Model.ItemList.Count; i++)
-                                {
-                                    Item order = Model.ItemList[i];
 
-                                    <tr>
-                                        <th class="item-index" scope="row">@i.</th>
-                                        <td>
-                                            <input type="text" name="ItemList[@i].Name" value="@order.Name" />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ItemList[@i].Description" value="@order.Description" />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ItemList[@i].Quantity" value="@order.Quantity" />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ItemList[@i].Rate" value="@order.Rate" />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
-                                        </td>
+                        </div>*@
+                </div>
+            </div>
+            <div id="salesOrderContainer">
+                @{double finalTotal = 0; }
+                @if (Model != null && Model.ItemList.Count > 0)
+                {
+                    <div class="mt-3 | table-container">
+                        <table class="table table-striped table-bordered | responsive-table">
+                            <thead>
+                                <tr>
+                                    @*<th scope="col">No.</th>*@
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Rate</th>
+                                    <th scope="col">Tax</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Actions</th>
 
-                                        <td>
-                                            @{ double total = order.Amount * order.Quantity;
-                                                finalTotal += total;
-                                            }
-                                            <input type="text" name="ItemList[@i].Total" value="@total" />
-                                        </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int count = 0;}
 
-                                        <td class="actions-col">
+                                @{
+                                    for (int i = 0; i < Model.ItemList.Count; i++)
+                                    {
+                                        Item order = Model.ItemList[i];
+                                        count++;
 
-                                            <div class="action-btns">
-                                                <a id="edit-btn">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                </a>
-                                                <a class="delete-btn">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    count++;
+                                        <tr>
+                                            @*<th class="item-index" scope="row">@count.</th>*@
+                                            <th scope="row">
+                                                <input type="text" name="ItemList[@i].Name" value="@order.Name" />
+                                            </th>
+                                            @*<td>
+                                                    <input type="text" name="ItemList[@i].Name" value="@order.Name" />
+                                                </td>*@
+                                            <td data-title="Description">
+                                                <input type="text" name="ItemList[@i].Description" value="@order.Description" />
+                                            </td>
+                                            <td data-title="Quantity" class="td-sm">
+                                                <input type="text" name="ItemList[@i].Quantity" value="@order.Quantity" />
+                                            </td>
+                                            <td data-title="Amount" class="td-sm">
+                                                <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
+                                            </td>
+                                            <td data-title="Rate" class="td-sm">
+                                                <input type="text" name="ItemList[@i].Rate" value="@order.Rate" />
+                                            </td>
+                                            <td data-title="Tax" class="td-sm">
+                                                <input type="text" name="ItemList[@i].Tax" value="@order.Tax" />
+                                            </td>
+
+                                            <td data-title="Total">
+                                                @{ double total = order.Amount * order.Quantity;
+                                                    finalTotal += total;
+                                                }
+                                                <input type="text" name="ItemList[@i].Total" value="@total" />
+                                            </td>
+
+                                            <td class="actions-col td-sm">
+
+                                                <div class="action-btns">
+                                                    <a id="edit-btn" class="text-success" data-id="@order.ItemId" onclick="editSalesOrderItem(this)">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                    </a>
+                                                    <a id="delete-btn" class="text-danger" data-id="@order.ItemId" onclick='deleteSalesOrderItem(this)'>
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        <tr>
-                            <td></td>
-                            <td class="font-weight-bold">Order Total</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="font-weight-bold">@finalTotal</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            }
 
-            @if (Model != null && Model.ItemList != null)
-            {
-                <div class="row justify-content-between mt-5">
-                    <div class="col submit-order-form-container">
-
-                        <button class="btn btn-primary">Submit Order</button>
+                            </tbody>
+                        </table>
+                        <div class="container">
+                            <p>Sub Total</p>
+                            <div class="col-2 | tax-container">
+                                <label for="taxes-dropdown" class="form-label m-0">Tax</label>
+                                <select id="taxes-dropdown">
+                                    <option>Select</option>
+                                </select>
+                                <span id="tax-percent">(0.3%)</span>
+                            </div>
+                            <div>
+                               <span class="font-weight-bold">Total Cost</span> 
+                               <span id="order-total">@finalTotal</span>
+                            </div>
+                        </div>
 
                     </div>
-                    <div class="col clear-all-form-container">
-                        @*<form method="post" action="@Url.Action("ClearOrders", "SalesOrder")">
-                                <button class="btn btn-danger">Clear All</button>
-                            </form>*@
+                }
+
+                @if (Model != null && Model.ItemList.Count > 0)
+                {
+                    <div class="row justify-content-between mt-5">
+                        <div class="col submit-order-form-container">
+
+                            <button id="submit-btn" class="btn">Submit Order</button>
+
+                        </div>
+                        <div class="col clear-all-form-container">
+                            @*<form method="post" action="@Url.Action("ClearOrders", "SalesOrder")">
+                                    <button class="btn btn-danger">Clear All</button>
+                                </form>*@
+                        </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
+
 
 <script>
-    
+
     function modalToggle() {
-        $("#modal-btn").click(function () {
+        $("#add-btn").click(function () {
             $("#staticBackdrop").modal('show');
         });
 
     }
 
-    async function getCustomerJobs() {
-        try {
-            const fetchUrl = fetch("/Customer/GetCustomerJobs");
-            const response = await fetchUrl;
-            const result = await response.json();
+    async function deleteSalesOrderItem(item) {
+        let id = item.getAttribute("data-id");
 
-            return result;
-        }
-        catch (error) {
-            setTimeout(() => {
-                alert("Error fecting customer jobs. Please try again.");
-                console.log("Error fetching customer jobs: ", error);
-            }, 30000)
-        }
-        //return jobsListContainer;
-    }
+        if (id != undefined) {
+            try {
+                const response = await fetch(`/App/DeleteItem/${id}`, {
+                    method: "Post"
+                })
+                if (!response.ok) {
+                    throw new Error(`Error deleting item: ${response.statusText}`)
+                }
+                const result = await response.json();
 
-    function getCustomerId() {
-        const customerIdInput = document.getElementById("customerId");
-        const customerNameInput = document.getElementById("customerJob")
-        const customerJobs = getCustomerJobs();
-        customerNameInput.addEventListener("change", (e) => {
-            if (e.target.value == "Select")
-                customerIdInput.value = "";
-            customerJobs.then(data => {
-                data.filter(customerJob => {
-                    if (customerJob.Name == e.target.value) {
-                        customerIdInput.value = customerJob.CustomerListID;
+                if (result) {
+                    const deletedItem = item.closest("tr");
+                    const deletedItemTotal = deletedItem.querySelector("[data-title='Total'] input")
+                    const itemCountEl = document.querySelector("#item-count");
+                    const tableEl = document.querySelector(".table-container");
+                    const totalCost = document.getElementById("order-total")
+                    const updateTotalCost = Number(totalCost.textContent) - Number(deletedItemTotal.value)
+
+                    deletedItem.remove();
+                    totalCost.textContent = `$${updateTotalCost}`
+
+                    if (result.data.length == 0) {
+                        itemCountEl.textContent = "(0 item)";
+                        tableEl.style.display = "none";
+                    } else {
+                        itemCountEl.textContent = `(${result.data.length} item)`;
                     }
-                });
-            })
-        });
+                }
+
+            } catch (error) {
+                console.error('Error during deletion:', error);
+            }
+        }
+
+
     }
 
-    async function getItems() {
+    async function editSalesOrderItem(item) {
+        let id = item.getAttribute("data-id");
         try {
-            const fetchUrl = fetch("/Item/GetItems");
-            const response = await fetchUrl;
-            const result = await response.json();
-
-            return result
-        }
-        catch (error) {
-            //itemsContainer.innerHTML = `<p>Error fecting items. Please try again.</p>`
-            console.log("Error fetching items: ", error);
-        }
-    }
-
-    async function editSalesOrderItem(orderId) {
-
-        try {
-            const response = await fetch(`/SalesOrder/GetItemOrderById/${orderId}`);
+            const response = await fetch(`/App/UpdateItem/${id}`);
 
             if (!response.ok) {
                 throw new Error(`Error fetching item: ${response.statusText}`);
@@ -234,59 +249,13 @@
         }
     }
 
-
-    //functions to render html 
-    function renderCustomerJobsHTML() {
-        const jobsListContainer = document.getElementById("customerJobsList");
-        const customerJobs = getCustomerJobs();
-
-        customerJobs.then(result => {
-            if (result.length > 0) {
-                //const customerJobs = result.map(customerJob => `<option>${customerJob.Name}</option>`);
-                result.map(customerJob => {
-                    if (customerJob.Locations.length > 0) {
-                        const optgroupEl = document.createElement("optgroup")
-                        optgroupEl.label = customerJob.Name
-
-                        let optionEl = document.createElement("option")
-                        optionEl.text = customerJob.Name
-
-                        optgroupEl.append(optionEl)
-
-                        const locations = customerJob.Locations;
-                        locations.map(location => {
-                            optionEl = document.createElement("option")
-                            optionEl.text = `${customerJob.Name}: ${location}`
-                            optgroupEl.append(optionEl)
-
-                        });
-                        jobsListContainer.querySelector(".customer-list").appendChild(optgroupEl)
-
-                    } else {
-                        const optionEl = document.createElement("option")
-                        optionEl.text = customerJob.Name
-                        jobsListContainer.querySelector(".customer-list").appendChild(optionEl)
-
-                    }
-
-                });
-
-                //jobsListContainer.querySelector(".customer-list").innerHTML += customerJobs.join("")
-            } else {
-                setTimeout(() => {
-                    alert("There are no customer jobs. Add new customer jobs to your QuickBooks company file and then try again")
-                }, 30000)
-            }
-        })
-    }
-
-    function updateModalContentHTML(itemOrder) {
-        const modalContent = $("#staticBackdrop .modal-content");
-        modalContent.empty();
-        const form = `
+    function updateModalContentHTML(item) {
+    const modalContent = $("#staticBackdrop .modal-content");
+    modalContent.empty();
+    const form = `
                     <form method="post" action="@Url.Action("UpdateOrder", "SalesOrder")">
               <div class="modal-header">
-                  <input type="hidden" name="OrderId" value="${itemOrder.OrderId}"/>
+                  <input type="hidden" name="OrderId" value="${item.OrderId}"/>
                   <h5 class="modal-title" id="staticBackdropLabel">Edit order info</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
               </div>
@@ -295,25 +264,25 @@
                       <label for="item" class="form-label">Item</label>
                       <div id="itemsContainer">
                           <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
-                              <option selected>${itemOrder.ItemName}</option>
+                              <option selected>${item.Name}</option>
                           </select>
                       </div>
                   </div>
                   <div class="col mb-3">
                       <label for="desc" class="form-label">Description</label>
-                      <input name="Description" type="text" class="form-control" id="desc" value=${itemOrder.Description} />
+                      <input name="Description" type="text" class="form-control" id="desc" value=${item.Description} />
                   </div>
                   <div class="col mb-3">
                       <label for="qty" class="form-label">Quantity</label>
-                      <input name="Quantity" type="text" class="form-control" id="qty" value=${itemOrder.Quantity} />
+                      <input name="Quantity" type="text" class="form-control" id="qty" value=${item.Quantity} />
                   </div>
                   <div class="col mb-3">
                       <label for="amt" class="form-label">Amount</label>
-                      <input name="Amount" type="text" class="form-control" id="amt" value=${itemOrder.Amount} />
+                      <input name="Amount" type="text" class="form-control" id="amt" value=${item.Amount} />
                   </div>
                   <div class="col mb-3">
                       <label for="rate" class="form-label">Rate</label>
-                      <input name="Rate" type="text" class="form-control" id="rate" value=${itemOrder.Rate} />
+                      <input name="Rate" type="text" class="form-control" id="rate" value=${item.Rate} />
                   </div>
               </div>
               <div class="modal-footer">
@@ -321,168 +290,25 @@
               </div>
           </form>
 `;
-        modalContent.append(form);
-        $("#staticBackdrop").modal('show');
-    }
-
-    async function deleteSalesOrderItem(id) {
-        try {
-            const response = await fetch(`/SalesOrder/DeleteItem/${id}`, {
-                method: "Post"
-            })
-            if (!response.ok) {
-                throw new Error(`Error deleting item: ${response.statusText}`)
-            }
-            const result = await response.json();
-            //console.log(result)
-            if (result) {
-                let deletedItem = document.getElementById(result.deleteItem);
-                const itemCountEl = document.querySelector("#item-count");
-                const tableEl = document.querySelector(".table-container");
-                deletedItem.remove();
-
-                if (result.data.length == 0) {
-                    itemCountEl.textContent = "(0 item)";
-                    tableEl.style.display = "none";
-                } else {
-                   itemCountEl.textContent = `(${result.data.length} item)`;
-                }
-            }
-
-        } catch (error) {
-            console.error('Error during deletion:', error);
-        }
-
-    }
-
-    function renderItemsHTML() {
-        const itemsContainer = document.getElementById("items-container");
-        const categoriesDropdown = itemsContainer.querySelector("#category-dropdown");
-        const itemsDropdown = itemsContainer.querySelector("#item-dropdown");
-        const itemsArr = getItems();
-
-        //add items to items dropdown by default
-        const itemsDispay = () => {
-            itemsArr.then(result => {
-                for (const items in result) {
-                    result[items].map(item => {
-                        let optionEl = `<option>${item.Name}</option>`
-                        itemsContainer.querySelector(".items-list").innerHTML += optionEl;
-                    })
-                }
-            });
-        }
-
-        itemsDispay();
-
-        categoriesDropdown.addEventListener("change", (e) => {
-            clickedFirst = "category dropdown";
-            itemsDropdown.innerHTML = `<option>Select</option>`;
-            if (e.target.value != "Select") {
-                itemsArr.then(result => {
-                    for (const items in result) {
-                        result[items].filter(item => {
-                            if (item.Category == e.target.value) {
-                                let optionEl = `<option>${item.Name}</option>`
-                                itemsContainer.querySelector(".items-list").innerHTML += optionEl;
-                            }
-                        });
-                    }
-                });
-            } else {
-                itemsDispay();
-            }
-        });
-    }
-
-    function renderItemsCategoryHTML() {
-        const itemsContainer = document.getElementById("items-container");
-        const categoriesDropdown = itemsContainer.querySelector("#category-dropdown");
-
-        const categoriesArr = ["Service", "Inventory", "Non Inventory", "Inventory Assembly", "Fixed Asset", "Discount", "Payment", "Sales Tax", "Sales Tax Group", "Group", "SubTotal", "Other Charge"];
-
-        const categoryEl = categoriesArr.map(category => `<option>${category}</option>`);
-        categoriesDropdown.innerHTML += categoryEl.join("");
-    }
-
-
-    //submitting the order
-
-    async function submitSalesOrder() {
-        const form = document.getElementById("sales-order-form");
-        const items = Array.from(form.getElementsByTagName("tr"))
-        const itemDictionary = {}
-
-        items.forEach(item => {
-            const td = Array.from(item.getElementsByTagName("td"))
-            console.log(td[0])
-            if (td.length > 0) {
-                td.map(el => {
-                    console.log(el[0]) 
-                })
-            }
-        })
-       
-        form.addEventListener("submit", (e) => {
-            e.preventDefault()
-            const formData = new FormData(form);
-            console.log(formData)
-            fetch('/App/Submit', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        })
-       
-    }
-
-    function addRateAndAmount() {
-        const modal = document.getElementById("staticBackdrop")
-        const taxEl = document.getElementById("tax");
-        const itemEl = document.getElementById("item-dropdown");
-        const itemCategoryEl = document.getElementById("category-dropdown")
-       
-        let tax;
-        modal.addEventListener("click", (e) => {
-            let category = itemCategoryEl.value.replace(/\s+/g, "");
-            category = category[0].toLowerCase() + category.slice(1)
-            
-            if (itemEl.value != "Select" && itemCategoryEl.value != "Select") {
-                const items = getItems()
-                items.then(item => {
-                    const itemSelected = item[category].filter(i => i.Name == itemEl.value)
-                    //fix this
-                    itemSelected[0].Tax ? tax = itemSelected[0].Tax : undefined
-
-                    if (tax != undefined) {
-                        taxEl.value = tax
-                    }
-                })
-            }
-
-            
-        })
-       
-        
-    }
+    modalContent.append(form);
+    $("#staticBackdrop").modal('show');
+}
 
     $(document).ready(function () {
-     
+
         //modal to add new item
         modalToggle();
 
-        getItems();
-        renderItemsCategoryHTML();
-        renderItemsHTML()
+        //getItems();
+        //renderItemsCategoryHTML();
+        //renderItemsHTML()
 
-        renderCustomerJobsHTML()
-        getCustomerId();
+        //renderCustomerJobsHTML()
+        // getCustomerId();
 
 
-        addRateAndAmount();
-       
+        //addRateTaxAmount();
+
     });
 
 </script>

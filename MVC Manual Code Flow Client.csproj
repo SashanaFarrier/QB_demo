@@ -328,6 +328,10 @@
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
     <Content Include="Scripts\popper.min.js" />
+    <Content Include="Scripts\qb\customers.js" />
+    <Content Include="Scripts\qb\items.js" />
+    <Content Include="Scripts\qb\salesOrder.js" />
+    <Content Include="Scripts\qb\updates.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
