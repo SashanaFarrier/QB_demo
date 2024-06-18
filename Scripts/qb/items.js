@@ -2,10 +2,24 @@
 document.addEventListener("DOMContentLoaded", () => {
     const taxesDropDown = document.getElementById("taxes-dropdown");
     const taxPercentSpan = document.getElementById("tax-percent");
+    //const amountEls = Array.from(document.querySelectorAll("#amt"));
+    
     getItems();
     renderItemsCategoryHTML();
     renderItemsHTML()
     getTaxes()
+
+   
+    //amountEls.forEach(el => {
+    //    el.addEventListener("input", (e) => {
+    //        let inputVal = Number(e.target.value)
+    //        let rate = inputVal / Number(quantityEl.value)
+
+    //        if ((e.target.value != "" && quantityEl.value != "")) {
+    //            el.parentElement.nextElementSibling.querySelector("#rate").value = rate
+    //        }
+    //    })
+    //})
    // addRateTaxAmount();
 })
 
@@ -33,7 +47,7 @@ function renderItemsHTML() {
     const rateEl = document.getElementById("rate");
     const amountEl = document.getElementById("amt");
     const quantityEl = document.getElementById("qty");
-   
+
 
     //add items to items dropdown by default
     const itemsDispay = () => {
@@ -101,8 +115,8 @@ function renderItemsHTML() {
                             amountEl.value = ""
 
                             item.Rate && item.Rate > 0 ? rateEl.value = item.Rate :
-                            item.Amount > 0 && +quantityEl.value > 0 ?
-                            rateEl.value = item.Amount / +quantityEl.value :
+                            item.Amount > 0 && Number(quantityEl.value) > 0 ?
+                            rateEl.value = item.Amount / Number(quantityEl.value) :
                             rateEl.value = "";
                         }
                     })
@@ -110,6 +124,19 @@ function renderItemsHTML() {
             })
         }
     })
+
+    amountEl.addEventListener("input", (e) => {
+        let inputVal = Number(e.target.value)
+        let rate = inputVal / Number(quantityEl.value)
+        console.log(rate)
+
+        if ((e.target.value != "" && quantityEl.value != "")) {
+            rateEl.value = rate.toFixed(2)
+        }
+    });
+
+   
+   
 }
 
 
@@ -127,22 +154,31 @@ function renderItemsCategoryHTML() {
 function getTaxes() {
     const taxesDropDown = document.getElementById("taxes-dropdown");
     const taxPercentSpan = document.getElementById("tax-percent");
-    itemsArr.then(data => {
-        const taxes = data.salesTax
-        console.log(taxes)
-        const taxesEl = taxes.map(tax => `<option>${tax.Name}</option>`)
-        taxesDropDown.innerHTML += taxesEl.join("")
+    const totalCost = document.getElementById("order-total")
 
-        taxesDropDown.addEventListener("change", (e) => {
-            const tax = e.target.value;
-            taxes.filter(t => {
-                if (t.Name == tax) {
-                    taxPercentSpan.textContent = `(${t.Tax}%)`
-                }
+    if (taxesDropDown != null) {
+        itemsArr.then(data => {
+            const taxes = data.salesTax
+            console.log(taxes)
+            const taxesEl = taxes.map(tax => `<option>${tax.Name}</option>`)
+            taxesDropDown.innerHTML += taxesEl.join("")
+
+            taxesDropDown.addEventListener("change", (e) => {
+                const tax = e.target.value;
+                taxes.filter(t => {
+                    if (t.Name == tax) {
+                        taxPercentSpan.textContent = `(${t.Tax}%)`
+
+                        const total = (Number(totalCost.textContent.slice(1)) * Number(t.Tax)) + Number(totalCost.textContent.slice(1))
+                        console.log(total)
+                        totalCost.textContent = total
+                    }
+                })
+                //console.log(tax)
+
             })
-            console.log(tax)
 
         })
-        //    
-    })
+    }
+    
 }

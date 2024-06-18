@@ -44,11 +44,18 @@ namespace MvcCodeFlowClientManual.Models
             get { return itemList; }
             set { itemList = value; }
         }
-        private Dictionary<ItemCategory, List<Item>> itemDictionary = new Dictionary<ItemCategory, List<Item>>();
-        public Dictionary<ItemCategory, List<Item>> ItemDictionary
+        //private Dictionary<ItemCategory, List<Item>> itemDictionary = new Dictionary<ItemCategory, List<Item>>();
+        //public Dictionary<ItemCategory, List<Item>> ItemDictionary
+        //{
+        //    get { return itemDictionary; }
+        //    set { itemDictionary = value; }
+        //}
+        private string customerSalesTaxCodeRef;
+
+        public string CustomerSalesTaxCodeRef
         {
-            get { return itemDictionary; }
-            set { itemDictionary = value; }
+            get { return customerSalesTaxCodeRef; }
+            set { customerSalesTaxCodeRef = value; }
         }
 
         private double totalTax;

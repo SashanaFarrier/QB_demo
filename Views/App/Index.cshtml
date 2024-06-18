@@ -25,6 +25,7 @@
     </div>*@
 <!-- Modal -->
 @Html.Partial("_AddItemModal")
+@Html.Partial("_UpdateItemModal")
 
 <div class="form-container">
     <form id="sales-order-form" method="post" action="@Url.Action("Submit", "App")">
@@ -60,7 +61,7 @@
                 </div>
             </div>
             <div id="salesOrderContainer">
-                @{double finalTotal = 0; }
+                @{double subTotal = 0; }
                 @if (Model != null && Model.ItemList.Count > 0)
                 {
                     <div class="mt-3 | table-container">
@@ -71,10 +72,10 @@
                                     <th scope="col">Item Name</th>
                                     <th scope="col">Description</th>
                                     <th scope="col">Quantity</th>
-                                    <th scope="col">Amount</th>
                                     <th scope="col">Rate</th>
                                     <th scope="col">Tax</th>
-                                    <th scope="col">Total</th>
+                                    <th scope="col">Amount</th>
+                                    @*<th scope="col">Total</th>*@
                                     <th scope="col">Actions</th>
 
                                 </tr>
@@ -82,72 +83,82 @@
                             <tbody>
                                 @{ int count = 0;}
 
+
                                 @{
                                     for (int i = 0; i < Model.ItemList.Count; i++)
                                     {
                                         Item order = Model.ItemList[i];
                                         count++;
 
-                                        <tr>
-                                            @*<th class="item-index" scope="row">@count.</th>*@
-                                            <th scope="row">
-                                                <input type="text" name="ItemList[@i].Name" value="@order.Name" />
-                                            </th>
-                                            @*<td>
-                                                    <input type="text" name="ItemList[@i].Name" value="@order.Name" />
-                                                </td>*@
-                                            <td data-title="Description">
-                                                <input type="text" name="ItemList[@i].Description" value="@order.Description" />
-                                            </td>
-                                            <td data-title="Quantity" class="td-sm">
-                                                <input type="text" name="ItemList[@i].Quantity" value="@order.Quantity" />
-                                            </td>
-                                            <td data-title="Amount" class="td-sm">
-                                                <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
-                                            </td>
-                                            <td data-title="Rate" class="td-sm">
-                                                <input type="text" name="ItemList[@i].Rate" value="@order.Rate" />
-                                            </td>
-                                            <td data-title="Tax" class="td-sm">
-                                                <input type="text" name="ItemList[@i].Tax" value="@order.Tax" />
-                                            </td>
+                                                                <tr>
+                                                                    @*<th class="item-index" scope="row">@count.</th>*@
+                                                                    <th scope="row">
+                                                                        <input type="text" name="ItemList[@i].Name" value="@order.Name" />
+                                                                    </th>
+                                                                    @*<td>
+            <input type="text" name="ItemList[@i].Name" value="@order.Name" />
+        </td>*@
+                                                                    <td data-title="Description">
+                                                                        <input type="text" name="ItemList[@i].Description" value="@order.Description" />
+                                                                    </td>
+                                                                    <td data-title="Quantity" class="td-sm">
+                                                                        <input type="text" name="ItemList[@i].Quantity" value="@order.Quantity" />
+                                                                    </td>
+                                                                    @*<td data-title="Amount" class="td-sm">
+        <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
+        </td>*@
+                                                                    <td data-title="Rate" class="td-sm">
+                                                                        <input type="text" name="ItemList[@i].Rate" value="@order.Rate" />
+                                                                    </td>
+                                                                    <td data-title="Tax" class="td-sm">
+                                                                        <input type="text" name="ItemList[@i].Tax" value="@order.Tax" />
+                                                                    </td>
+                                                                    <td data-title="Amount" class="td-sm">
+                                                                        <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
+                                                                    </td>
+                                                                    @{ double total = order.Rate * order.Quantity;
+                                                                        subTotal += total;
+                                                                    }
+                                                                    @*<td data-title="Total">
+            @{ double total = order.Rate * order.Quantity;
+                subTotal += total;
+            }
+            <input type="text" name="ItemList[@i].Total" value="@total" />
+        </td>*@
 
-                                            <td data-title="Total">
-                                                @{ double total = order.Amount * order.Quantity;
-                                                    finalTotal += total;
-                                                }
-                                                <input type="text" name="ItemList[@i].Total" value="@total" />
-                                            </td>
+                                                                    <td class="actions-col td-sm">
 
-                                            <td class="actions-col td-sm">
-
-                                                <div class="action-btns">
-                                                    <a id="edit-btn" class="text-success" data-id="@order.ItemId" onclick="editSalesOrderItem(this)">
-                                                        <i class="fa-solid fa-pen-to-square"></i>
-                                                    </a>
-                                                    <a id="delete-btn" class="text-danger" data-id="@order.ItemId" onclick='deleteSalesOrderItem(this)'>
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                                        <div class="action-btns">
+                                                                            <a id="edit-btn" class="text-success" data-id="@order.ItemId" onclick="editSalesOrderItem(this)">
+                                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                                            </a>
+                                                                            <a id="delete-btn" class="text-danger" data-id="@order.ItemId" onclick='deleteSalesOrderItem(this)'>
+                                                                                <i class="fa-solid fa-trash"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
                                     }
                                 }
 
                             </tbody>
                         </table>
-                        <div class="container">
-                            <p>Sub Total</p>
+                        <div class="container row justify-content-between align-items-center">
+                            <div class="sub-total">
+                                <span class="font-weight-bold">Sub Total</span>
+                                <span>$@subTotal</span>
+                            </div>
+                           
                             <div class="col-2 | tax-container">
                                 <label for="taxes-dropdown" class="form-label m-0">Tax</label>
-                                <select id="taxes-dropdown">
+                                <select id="taxes-dropdown" name="CustomerSalesTaxCodeRef">
                                     <option>Select</option>
                                 </select>
-                                <span id="tax-percent">(0.3%)</span>
+                                <span id="tax-percent">(0.0%)</span>
                             </div>
-                            <div>
-                               <span class="font-weight-bold">Total Cost</span> 
-                               <span id="order-total">@finalTotal</span>
+                            <div class="total">
+                               <span class="font-weight-bold">Total</span> 
+                               <span id="order-total">$@subTotal</span>
                             </div>
                         </div>
 
@@ -226,72 +237,110 @@
 
     async function editSalesOrderItem(item) {
         let id = item.getAttribute("data-id");
-        try {
-            const response = await fetch(`/App/UpdateItem/${id}`);
+        if (id != undefined) {
+            try {
+                const response = await fetch(`/App/UpdateItem/${id}`);
 
-            if (!response.ok) {
-                throw new Error(`Error fetching item: ${response.statusText}`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching item: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                //console.log(result)
+
+                if (result != null) {
+                    const SalesOrderItem = await result;
+                    console.log(SalesOrderItem)
+                    updateModalContentHTML(SalesOrderItem);
+                }
+
+                //return result;
+            } catch (error) {
+                console.error('Error fetching item:', error);
+
+                alert('An error occurred while retrieving item details. Please try again later.');
             }
-
-            const result = await response.json();
-            //console.log(result)
-
-            if (result != null) {
-                const itemOrder = await result;
-                updateModalContentHTML(itemOrder);
-            }
-
-            //return result;
-        } catch (error) {
-            console.error('Error fetching item:', error);
-
-            alert('An error occurred while retrieving item details. Please try again later.');
         }
+       
+    }
+
+      async function updateItemDetails(item) {
+        let id = item.getAttribute("data-id");
+          console.log("item", id)
+          console.log(item)
+        item.ItemId = id;
+        const response = await fetch(`/App/UpdateItem/${item}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json" // Assuming JSON data
+            },
+            //body: item // Convert itemOrder object to JSON string for body
+        });
+
+        //if (!response.ok) {
+        //    throw new Error(`Error updating item: ${response.statusText}`);
+        //}
+
+        //console.log("Item details updated successfully!");
+        return response;
     }
 
     function updateModalContentHTML(item) {
-    const modalContent = $("#staticBackdrop .modal-content");
-    modalContent.empty();
+        const modalContent = document.querySelector("#updateItemModal .modal-content");
+
     const form = `
-                    <form method="post" action="@Url.Action("UpdateOrder", "SalesOrder")">
-              <div class="modal-header">
-                  <input type="hidden" name="OrderId" value="${item.OrderId}"/>
-                  <h5 class="modal-title" id="staticBackdropLabel">Edit order info</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
-              </div>
+              <form method="post" action="@Url.Action("UpdateItem", "App")">
+    <div class="modal-header">
+    <input type="text" value="${item.ItemId}" hidden />
+        <h5 class="modal-title" id="staticBackdropLabel">Edit item info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+    </div>
+
               <div class="modal-body">
-                  <div class="col mb-3">
-                      <label for="item" class="form-label">Item</label>
-                      <div id="itemsContainer">
-                          <select class="form-select mb-3 items-list" aria-label="items list" name="ItemName">
-                              <option selected>${item.Name}</option>
-                          </select>
-                      </div>
-                  </div>
-                  <div class="col mb-3">
-                      <label for="desc" class="form-label">Description</label>
-                      <input name="Description" type="text" class="form-control" id="desc" value=${item.Description} />
-                  </div>
-                  <div class="col mb-3">
-                      <label for="qty" class="form-label">Quantity</label>
-                      <input name="Quantity" type="text" class="form-control" id="qty" value=${item.Quantity} />
-                  </div>
-                  <div class="col mb-3">
-                      <label for="amt" class="form-label">Amount</label>
-                      <input name="Amount" type="text" class="form-control" id="amt" value=${item.Amount} />
-                  </div>
-                  <div class="col mb-3">
-                      <label for="rate" class="form-label">Rate</label>
-                      <input name="Rate" type="text" class="form-control" id="rate" value=${item.Rate} />
-                  </div>
+                            <div class="col mb-3">
+                <div id="items-container">
+                    <div class="categories">
+                        <label for="category-dropdown">Item Category</label>
+                        <select id="category-dropdown" class="form-select mb-3 category-list" aria-label="items list" name="Category">
+                            <option selected value=${item.Category}>${item.Category}</option>
+                        </select>
+                    </div>
+                    <label for="item-dropdown" class="form-label">Item</label>
+                    <select id="item-dropdown" class="form-select mb-3 items-list" aria-label="items list" name="Name">
+                        <option selected value="${item.Name}">${item.Name}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <label for="desc" class="form-label">Description</label>
+                <input name="Description" type="text" class="form-control" id="desc" value="${item.Description}" />
+            </div>
+            <div class="col mb-3">
+                <label for="qty" class="form-label">Quantity</label>
+                <input name="Quantity" type="text" class="form-control" id="qty" value="${item.Quantity}" />
+            </div>
+            <div id="amount-col" class="col mb-3">
+                <label for="amt" class="form-label">Amount</label>
+                <input name="Amount" type="text" class="form-control" id="amt" value="${item.Amount}" />
+            </div>
+             <div id="rate-col" class="col mb-3">
+                <label for="rate" class="form-label">Rate</label>
+                <input name="Rate" type="text" class="form-control" id="rate" value="${item.Rate}" readonly />
+            </div>
+            <div id="tax-col" class="col mb-3">
+                <label for="tax" class="form-label">Tax</label>
+                <input name="Tax" type="text" class="form-control" id="tax" value="${item.Tax}" readonly />
+            </div>
+        </div>
               </div>
               <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary">Update</button>
+                  <button onclick="updateItemDetails(this)" type="submit" class="btn btn-primary" data-id="${item.ItemId}">Update</button>
               </div>
-          </form>
+              </form>
 `;
-    modalContent.append(form);
-    $("#staticBackdrop").modal('show');
+        modalContent.innerHTML = form
+        console.log(modalContent)
+        $("#updateItemModal").modal('show');
 }
 
     $(document).ready(function () {

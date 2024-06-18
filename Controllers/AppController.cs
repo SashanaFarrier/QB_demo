@@ -125,8 +125,8 @@ namespace MvcCodeFlowClientManual.Controllers
 
             //Items.Add(newItem);
 
-            string id = ItemService.GetItems().Values.SelectMany(item => item).ToList().Find(x => x.Name == newItem.Name).ItemId;
-            newItem.ItemId = id;
+            //string id = ItemService.GetItems().Values.SelectMany(item => item).ToList().Find(x => x.Name == newItem.Name).ItemId;
+            //newItem.ItemId = id;
 
             _salesOrderItems.ItemList.Add(newItem);
 
@@ -145,45 +145,38 @@ namespace MvcCodeFlowClientManual.Controllers
 
         [HttpPost]
         public ActionResult UpdateItem(Item item) 
-        {
-            //List<Item> items = _salesOrderItems.ItemDictionary[ItemCategoryHelper.ParseEnum<ItemCategory>(item.Category)];
+{
+            Item updatedItem = _salesOrderItems.ItemList.Find(x =>  x.Name == item.Name);
 
-            //Item originalItem = items.Find(x => x.Category == item.Category);
+            if (updatedItem != null)
+            {
+                if (item.Quantity == 0)
+                {
+                    _salesOrderItems.ItemList.Remove(updatedItem);
+                }
+                else
+                {
+                    if (item.Quantity != updatedItem.Quantity)
+                    {
+                        updatedItem.Quantity = item.Quantity;
+                    }
 
-            //if (originalItem != null)
-            //{
-            //    if(item.Quantity == 0)
-            //    {
-            //        items.Remove(originalItem);
-            //    } 
-            //    else 
-            //    {
-            //        if(item.Quantity != originalItem.Quantity)
-            //        {
-            //            originalItem.Quantity = item.Quantity;
-            //        }
+                    if (item.Amount != updatedItem.Amount)
+                    {
+                        updatedItem.Amount = item.Amount;
+                    }
 
-            //        if(item.Cost != originalItem.Cost)
-            //        {
-            //            originalItem.Cost = item.Cost;
-            //        }
- 
-            //    } 
+                    if(item.Description != updatedItem.Description)
+                    {
+                        updatedItem.Description = item.Description;
+                    }
 
-                //originalItem.Quantity = item.Quantity;
+                }
 
-           // }
-            
-            //Item originalItem = 
-            
-            return RedirectToAction("~/Views/Shared/_UpdateItemModal");
+            }
+
+            return RedirectToAction("Index", "App");
         }
-
-        //[HttpDelete]
-        //public ActionResult DeleteItem(int id)
-        //{
-        //    return RedirectToAction("Index", "App");
-        //}
 
         [HttpPost]
         public JsonResult DeleteItem(string id)

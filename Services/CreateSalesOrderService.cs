@@ -32,10 +32,10 @@ namespace MvcCodeFlowClientManual.Services
 
                         salesOrderAddRq.defMacro.SetValue("IQBStringType");
                         
-                        salesOrderAddRq.CustomerRef.ListID.SetValue(salesOrder.CustomerId);
+                        //salesOrderAddRq.CustomerRef.ListID.SetValue(salesOrder.CustomerId);
                         salesOrderAddRq.CustomerRef.FullName.SetValue(salesOrder.CustomerJob);
                         salesOrderAddRq.TxnDate.SetValue(salesOrder.TransactionDate);
-
+                        salesOrderAddRq.CustomerSalesTaxCodeRef.FullName.SetValue(salesOrder.CustomerSalesTaxCodeRef);
                     //salesOrderAddRq.Memo.SetValue("Test if showing up in QB");
 
 
@@ -54,9 +54,10 @@ namespace MvcCodeFlowClientManual.Services
                             LineItemAdder.Quantity.SetValue(item.Quantity);
                             LineItemAdder.Amount.SetValue(item.Amount);
                             LineItemAdder.ORRatePriceLevel.Rate.SetValue(item.Rate);
+                            LineItemAdder.SalesTaxCodeRef.FullName.SetValue(item.Tax);
                             //LineItemAdder = salesOrderAddRq.ORSalesOrderLineAddList.Append().SalesOrderLineAdd;
-                                //ORSalesOrderLineAddListElement170.SalesOrderLineAdd.SalesTaxCodeRef.ListID.SetValue("10000-999022286");
-                            }
+                            //ORSalesOrderLineAddListElement170.SalesOrderLineAdd.SalesTaxCodeRef.ListID.SetValue("10000-999022286");
+                        }
                             
 
                         //ORSalesOrderLineAddListElement170.SalesOrderLineAdd.ORRatePriceLevel.Rate.SetValue(12000);
