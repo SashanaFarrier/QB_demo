@@ -35,7 +35,8 @@ namespace MvcCodeFlowClientManual.Services
                         //salesOrderAddRq.CustomerRef.ListID.SetValue(salesOrder.CustomerId);
                         salesOrderAddRq.CustomerRef.FullName.SetValue(salesOrder.CustomerJob);
                         salesOrderAddRq.TxnDate.SetValue(salesOrder.TransactionDate);
-                        salesOrderAddRq.CustomerSalesTaxCodeRef.FullName.SetValue(salesOrder.CustomerSalesTaxCodeRef);
+                        salesOrderAddRq.ItemSalesTaxRef.FullName.SetValue(salesOrder.CustomerSalesTax);
+                 
                     //salesOrderAddRq.Memo.SetValue("Test if showing up in QB");
 
 
@@ -59,7 +60,7 @@ namespace MvcCodeFlowClientManual.Services
                             //ORSalesOrderLineAddListElement170.SalesOrderLineAdd.SalesTaxCodeRef.ListID.SetValue("10000-999022286");
                         }
                             
-
+                        
                         //ORSalesOrderLineAddListElement170.SalesOrderLineAdd.ORRatePriceLevel.Rate.SetValue(12000);
                         //listid for tax
                         //

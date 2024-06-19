@@ -50,12 +50,12 @@ namespace MvcCodeFlowClientManual.Models
         //    get { return itemDictionary; }
         //    set { itemDictionary = value; }
         //}
-        private string customerSalesTaxCodeRef;
+        private string customerSalesTax;
 
-        public string CustomerSalesTaxCodeRef
+        public string CustomerSalesTax
         {
-            get { return customerSalesTaxCodeRef; }
-            set { customerSalesTaxCodeRef = value; }
+            get { return customerSalesTax; }
+            set { customerSalesTax = value; }
         }
 
         private double totalTax;

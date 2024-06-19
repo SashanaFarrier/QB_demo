@@ -159,7 +159,7 @@ function getTaxes() {
     if (taxesDropDown != null) {
         itemsArr.then(data => {
             const taxes = data.salesTax
-            console.log(taxes)
+            //console.log(taxes)
             const taxesEl = taxes.map(tax => `<option>${tax.Name}</option>`)
             taxesDropDown.innerHTML += taxesEl.join("")
 
@@ -168,9 +168,14 @@ function getTaxes() {
                 taxes.filter(t => {
                     if (t.Name == tax) {
                         taxPercentSpan.textContent = `(${t.Tax}%)`
+                        const percentage = ((Number(t.Tax) / 100) * Number(totalCost.textContent.slice(1))) / 2
+                        let total = Number(totalCost.textContent.slice(1)) + percentage
+                        //console.log(percentage)
+                        total = total.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                        });
 
-                        const total = (Number(totalCost.textContent.slice(1)) * Number(t.Tax)) + Number(totalCost.textContent.slice(1))
-                        console.log(total)
                         totalCost.textContent = total
                     }
                 })
