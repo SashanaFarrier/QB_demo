@@ -17,15 +17,15 @@ namespace MvcCodeFlowClientManual.Controllers
 {
     public class AppController : Controller
     {
-        ItemService ItemService = new ItemService();
+        //ItemService ItemService = new ItemService();
         //private SalesOrder _salesOrderItems;
         static SalesOrder _salesOrderItems = new SalesOrder();
-        public IList<Customer> customers = new List<Customer>();
+        //public IList<Customer> customers = new List<Customer>();
 
-        public QBConnection qBConnection = new QBConnection();
+        //public QBConnection qBConnection = new QBConnection();
         public CreateSalesOrderService createSalesOrderService = new CreateSalesOrderService();
 
-        private QBSessionManager sessionManager;
+        //private QBSessionManager sessionManager;
 
         //SalesOrder salesOrder  = new SalesOrder();
         //public AppController(SalesOrder salesorderitems)
@@ -35,54 +35,54 @@ namespace MvcCodeFlowClientManual.Controllers
 
       
 
-        public IList<Customer> ApiCallService()
-        {
-            if (qBConnection.getSessionManager() != null)
-            {
-                try
-                {
+        //public IList<Customer> ApiCallService()
+        //{
+        //    if (qBConnection.getSessionManager() != null)
+        //    {
+        //        try
+        //        {
 
-                    sessionManager = qBConnection.getSessionManager();
+        //            sessionManager = qBConnection.getSessionManager();
 
-                    IMsgSetRequest requestMsgSet = sessionManager.CreateMsgSetRequest("US", 13, 0);
+        //            IMsgSetRequest requestMsgSet = sessionManager.CreateMsgSetRequest("US", 13, 0);
 
-                    ICustomerQuery customerQuery = requestMsgSet.AppendCustomerQueryRq();
+        //            ICustomerQuery customerQuery = requestMsgSet.AppendCustomerQueryRq();
 
-                    IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
+        //            IMsgSetResponse responseMsgSet = sessionManager.DoRequests(requestMsgSet);
 
-                    IResponseList responseList = responseMsgSet.ResponseList;
+        //            IResponseList responseList = responseMsgSet.ResponseList;
 
-                    IResponse response = responseList.GetAt(0);
+        //            IResponse response = responseList.GetAt(0);
 
-                    if (response.StatusCode == 0)
-                    {
-                        IResponseType responseType = response.Type;
+        //            if (response.StatusCode == 0)
+        //            {
+        //                IResponseType responseType = response.Type;
 
-                        ICustomerRetList customertList = (ICustomerRetList)response.Detail;
+        //                ICustomerRetList customertList = (ICustomerRetList)response.Detail;
 
-                        for (int i = 0; i < customertList.Count; i++)
-                        {
-                            ICustomerRet customerRet = customertList.GetAt(i);
-                            string customerName = customerRet.FullName.GetValue();
+        //                for (int i = 0; i < customertList.Count; i++)
+        //                {
+        //                    ICustomerRet customerRet = customertList.GetAt(i);
+        //                    string customerName = customerRet.FullName.GetValue();
 
-                            var customer = new Customer()
-                            {
-                                FullName = customerName
-                            };
+        //                    var customer = new Customer()
+        //                    {
+        //                        FullName = customerName
+        //                    };
 
-                            customers.Add(customer);
-                        }
-                    }
+        //                    customers.Add(customer);
+        //                }
+        //            }
 
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine(ex.Message);
+        //        }
 
-            }
-            return customers;
-        }
+        //    }
+        //    return customers;
+        //}
         public ActionResult Index()
         {
             //List<Item> items = new List<Item>();
@@ -114,8 +114,11 @@ namespace MvcCodeFlowClientManual.Controllers
 
             if (!ModelState.IsValid)
             {
+                
                 //return a message to user
-                return RedirectToAction("Index", "App");
+                //return RedirectToAction("Index", "App");
+                //return PartialView("_AddItemModal", _salesOrderItems);
+                return View("~/Views/App/Index.cshtml");
             }
 
             //if(_salesOrderItems.SalesOrderId == null)
@@ -197,6 +200,11 @@ namespace MvcCodeFlowClientManual.Controllers
         {
             //salesOrder.ItemDictionary = _salesOrderItems.ItemDictionary;
 
+            if(!ModelState.IsValid)
+            {
+                return RedirectToAction("Index", "App");
+            }
+
             if (salesOrder != null && salesOrder.ItemList.Count > 0)
             {
                 createSalesOrderService.CreateSalesOrder(salesOrder);
@@ -204,13 +212,18 @@ namespace MvcCodeFlowClientManual.Controllers
 
 
             _salesOrderItems.ItemList = new List<Item>();
-
-            return RedirectToAction("Index", "App");
+            //return View("~/Views/App/Success.cshtml");
+           return RedirectToAction("Success", "App");
         }
 
         public ActionResult Error()
         {
             return View("Error");
+        }
+
+        public ActionResult Success()
+        {
+            return View();
         }
 
     }

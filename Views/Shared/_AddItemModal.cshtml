@@ -1,4 +1,5 @@
-﻿
+﻿@using MvcCodeFlowClientManual.Models
+
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -13,14 +14,18 @@
                         <div id="items-container">
                             <div class="categories">
                                 <label for="category-dropdown">Item Category</label>
-                                <select id="category-dropdown" class="form-select mb-3 category-list" aria-label="items list" name="Category">
-                                    <option selected value="Select">Select</option>
+                                <select id="category-dropdown" class="form-select mb-3 category-list" aria-label="category list" name="Category" required>
+                                    <option value="">-- Please Select --</option>
                                 </select>
+                                @*@Html.ValidationMessage("Category", "Please select item category from the dropdown", new { @class = "text-danger", style = "display:none" })*@
                             </div>
-                            <label for="item-dropdown" class="form-label">Item</label>
-                            <select id="item-dropdown" class="form-select mb-3 items-list" aria-label="items list" name="Name">
-                                <option selected value="Select">Select</option>
-                            </select>
+                            <div class="items">
+                                <label for="item-dropdown" class="form-label">Item</label>
+                                <select id="item-dropdown" class="form-select mb-3 items-list" aria-label="items list" name="Name" required title="Select the item category before selecting the item">
+            <option selected value="">-- Please Select --</option>
+        </select>
+
+                            </div>
                         </div>
                     </div>
                     <div class="col mb-3">
@@ -29,11 +34,12 @@
                     </div>
                     <div class="col mb-3">
                         <label for="qty" class="form-label">Quantity</label>
-                        <input name="Quantity" type="text" class="form-control" id="qty">
+                        <input name="Quantity" type="text" class="form-control" id="qty" required>
                     </div>
                     <div id="amount-col" class="col mb-3">
                         <label for="amt" class="form-label">Amount</label>
-                        <input name="Amount" type="text" class="form-control" id="amt">
+                        <input name="Amount" type="text" class="form-control" id="amt" required>
+                        @*@Html.ValidationMessage("Amount", new { @class = "text-danger"})*@
                     </div>
                     <div id="rate-col" class="col mb-3">
                         <label for="rate" class="form-label">Rate</label>
@@ -43,10 +49,6 @@
                         <label for="tax" class="form-label">Tax</label>
                         <input name="Tax" type="text" class="form-control" id="tax" readonly>
                     </div>
-                    @*<div class="col mb-3">
-            <label for="rate" class="form-label">Rate</label>
-            <input name="Rate" type="text" class="form-control" id="rate">
-        </div>*@
                 </div>
                 <div class="modal-footer">
                     @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
@@ -57,3 +59,4 @@
     </div>
 
 </div>
+

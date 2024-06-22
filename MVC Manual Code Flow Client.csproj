@@ -373,6 +373,7 @@
     <Content Include="Views\Item\Index.cshtml" />
     <Content Include="Views\Shared\_AddItemModal.cshtml" />
     <Content Include="Views\Shared\_UpdateItemModal.cshtml" />
+    <Content Include="Views\App\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

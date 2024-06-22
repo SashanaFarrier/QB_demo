@@ -60,7 +60,7 @@ function renderCustomerJobsHTML() {
                     const locations = customerJob.Locations;
                     locations.map(location => {
                         optionEl = document.createElement("option")
-                        optionEl.text = `${customerJob.Name}: ${location}`
+                        optionEl.text = `${customerJob.Name}:${location}`
                         optgroupEl.append(optionEl)
 
                     });

@@ -1,6 +1,7 @@
 ﻿using Intuit.Ipp.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -15,6 +16,8 @@ namespace MvcCodeFlowClientManual.Models
             get { return salesOrderId; }
             set { salesOrderId = value; }
         }
+
+        [Required]
         private DateTime transactionDate;
 
         public DateTime TransactionDate
@@ -22,6 +25,8 @@ namespace MvcCodeFlowClientManual.Models
             get { return transactionDate; }
             set { transactionDate = value; }
         }
+
+        [Required]
         private string customerJob;
 
         public string CustomerJob
@@ -58,12 +63,12 @@ namespace MvcCodeFlowClientManual.Models
             set { customerSalesTax = value; }
         }
 
-        private double totalTax;
-        public double TotalTax
-        {
-            get { return totalTax; }
-            set {  totalTax = value; }
-        }
+        //private double totalTax;
+        //public double TotalTax
+        //{
+        //    get { return totalTax; }
+        //    set {  totalTax = value; }
+        //}
         
         private double subTotal;
         public double SubTotal

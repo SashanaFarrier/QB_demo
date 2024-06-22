@@ -47,10 +47,12 @@
             <div class="container">
                 <div class="row justify-content-between align-items-center">
                     <div class="col">
-                        @{ string itemStr = "item";
-                            if (Model.ItemList.Count > 1) { itemStr = "items"; }
+                        @{ 
+                            string itemStr = "item";
+                            int count = 0;
+                            if (Model != null && Model.ItemList.Count > 1) { itemStr = "items"; }
                         }
-                        <p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span id="item-count" class="font-weight-light text-lowercase">(@Model.ItemList.Count @itemStr)</span></p>
+                        <p class="font-weight-bold text-uppercase m-0 | pending-order-text">Pending Order <span id="item-count" class="font-weight-light text-lowercase">(@count @itemStr)</span></p>
                     </div>
                     @*<div class="col customerId-container">
                             <label for="customerId" class="form-label" hidden>Customer ID</label>
@@ -81,9 +83,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @{ int count = 0;}
-
-
                                 @{
                                     for (int i = 0; i < Model.ItemList.Count; i++)
                                     {
@@ -104,9 +103,6 @@
                                                                     <td data-title="Quantity" class="td-sm">
                                                                         <input type="text" name="ItemList[@i].Quantity" value="@order.Quantity" />
                                                                     </td>
-                                                                    @*<td data-title="Amount" class="td-sm">
-        <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
-        </td>*@
                                                                     <td data-title="Rate" class="td-sm">
                                                                         <input type="text" name="ItemList[@i].Rate" value="@order.Rate" />
                                                                     </td>
@@ -114,18 +110,12 @@
                                                                         <input type="text" name="ItemList[@i].Tax" value="@order.Tax" />
                                                                     </td>
                                                                     <td data-title="Amount" class="td-sm">
-                                                                        <input type="text" name="ItemList[@i].Amount" value="@order.Amount" />
+                                                                        <input type="text" name="ItemList[@i].Amount" value="@((double)order.Amount)" />
                                                                     </td>
                                                                     @{ double total = order.Rate * order.Quantity;
                                                                         subTotal += total;
                                                                     }
-                                                                    @*<td data-title="Total">
-            @{ double total = order.Rate * order.Quantity;
-                subTotal += total;
-            }
-            <input type="text" name="ItemList[@i].Total" value="@total" />
-        </td>*@
-
+                                                                   
                                                                     <td class="actions-col td-sm">
 
                                                                         <div class="action-btns">
@@ -146,13 +136,13 @@
                         <div class="container row justify-content-between align-items-center">
                             <div class="sub-total">
                                 <span class="font-weight-bold">Sub Total</span>
-                                <span>$@subTotal</span>
+                                <span>$@((double)subTotal)</span>
                             </div>
                            
                             <div class="col-2 | tax-container">
                                 <label for="taxes-dropdown" class="form-label m-0">Tax</label>
                                 <select id="taxes-dropdown" name="CustomerSalesTax">
-                                    <option>Select</option>
+                                    <option value="">Select</option>
                                 </select>
                                 <span id="tax-percent">(0.0%)</span>
                             </div>
@@ -194,6 +184,7 @@
         });
 
     }
+    
 
     async function deleteSalesOrderItem(item) {
         let id = item.getAttribute("data-id");
@@ -264,7 +255,7 @@
        
     }
 
-      async function updateItemDetails(item) {
+    async function updateItemDetails(item) {
         let id = item.getAttribute("data-id");
           console.log("item", id)
           console.log(item)
@@ -347,17 +338,7 @@
 
         //modal to add new item
         modalToggle();
-
-        //getItems();
-        //renderItemsCategoryHTML();
-        //renderItemsHTML()
-
-        //renderCustomerJobsHTML()
-        // getCustomerId();
-
-
-        //addRateTaxAmount();
-
+       
     });
 
 </script>

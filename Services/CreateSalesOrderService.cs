@@ -35,8 +35,12 @@ namespace MvcCodeFlowClientManual.Services
                         //salesOrderAddRq.CustomerRef.ListID.SetValue(salesOrder.CustomerId);
                         salesOrderAddRq.CustomerRef.FullName.SetValue(salesOrder.CustomerJob);
                         salesOrderAddRq.TxnDate.SetValue(salesOrder.TransactionDate);
-                        salesOrderAddRq.ItemSalesTaxRef.FullName.SetValue(salesOrder.CustomerSalesTax);
-                 
+                        if(salesOrder.CustomerSalesTax != null)
+                        {
+                            salesOrderAddRq.ItemSalesTaxRef.FullName.SetValue       (salesOrder.CustomerSalesTax);
+
+                        }
+
                     //salesOrderAddRq.Memo.SetValue("Test if showing up in QB");
 
 
@@ -56,6 +60,7 @@ namespace MvcCodeFlowClientManual.Services
                             LineItemAdder.Amount.SetValue(item.Amount);
                             LineItemAdder.ORRatePriceLevel.Rate.SetValue(item.Rate);
                             LineItemAdder.SalesTaxCodeRef.FullName.SetValue(item.Tax);
+                            
                             //LineItemAdder = salesOrderAddRq.ORSalesOrderLineAddList.Append().SalesOrderLineAdd;
                             //ORSalesOrderLineAddListElement170.SalesOrderLineAdd.SalesTaxCodeRef.ListID.SetValue("10000-999022286");
                         }

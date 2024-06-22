@@ -3,32 +3,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const taxesDropDown = document.getElementById("taxes-dropdown");
     const taxPercentSpan = document.getElementById("tax-percent");
     //const amountEls = Array.from(document.querySelectorAll("#amt"));
-    
-    getItems();
+   
+    //getItems();
     renderItemsCategoryHTML();
     renderItemsHTML()
     getTaxes()
 
-   
-    //amountEls.forEach(el => {
-    //    el.addEventListener("input", (e) => {
-    //        let inputVal = Number(e.target.value)
-    //        let rate = inputVal / Number(quantityEl.value)
-
-    //        if ((e.target.value != "" && quantityEl.value != "")) {
-    //            el.parentElement.nextElementSibling.querySelector("#rate").value = rate
-    //        }
-    //    })
-    //})
-   // addRateTaxAmount();
 })
+
+const itemsArr = getItems();
 
 async function getItems() {
     try {
         const fetchUrl = fetch("/Item/GetItems");
         const response = await fetchUrl;
         const result = await response.json();
-
+                
         return result
     }
     catch (error) {
@@ -37,7 +27,6 @@ async function getItems() {
     }
 }
 
-const itemsArr = getItems();
 function renderItemsHTML() {
     const itemsContainer = document.getElementById("items-container");
     const categoriesDropdown = itemsContainer.querySelector("#category-dropdown");
@@ -48,14 +37,13 @@ function renderItemsHTML() {
     const amountEl = document.getElementById("amt");
     const quantityEl = document.getElementById("qty");
 
-
     //add items to items dropdown by default
     const itemsDispay = () => {
         itemsArr.then(result => {
             if(result.length > 0) {
                 for (const items in result) {
                     result[items].map(item => {
-                        let optionEl = `<option>${item.Name}</option>`
+                        let optionEl = `<option value="${item.Name}">${item.Name}</option>`
                         itemsContainer.querySelector(".items-list").innerHTML += optionEl;
                     })
                 }
@@ -63,21 +51,19 @@ function renderItemsHTML() {
         });
     }
 
-    //itemsDispay();
-
     categoriesDropdown.addEventListener("change", (e) => {
         //clickedFirst = "category dropdown";
         //itemsDropdown.innerHTML = ""
         
-        if (e.target.value != "Select") {
+        if (e.target.value != "") {
             //itemsDropdown.innerHTML = ""
             //console.log(itemsDropdown.innerHTML)
-            itemsDropdown.innerHTML = `<option>Select</option>`;
+            itemsDropdown.innerHTML = `<option value="">-- Please Select --</option>`;
             itemsArr.then(data => {
                 for (const items in data) {
                     data[items].filter(item => {
                         if (item.Category == e.target.value) {
-                            let optionEl = `<option>${item.Name}</option>`
+                            let optionEl = `<option value="${item.Name}">${item.Name}</option>`
                             itemsContainer.querySelector(".items-list").innerHTML += optionEl;
                         }
                     });
@@ -91,20 +77,13 @@ function renderItemsHTML() {
    
 
     itemsDropdown.addEventListener("click", (e) => {
-        if (e.target.value != "Select") {
+        if (e.target.value != "") {
             itemsArr.then(data => {
-
-                //get taxes 
-                getTaxes(data.salesTax)
-                //const taxes = data.salesTax
-                //const taxesEl = taxes.map(tax => `<option>${tax.Name}</option>`)
-                //taxesDropDown.innerHTML += taxesEl.join("")
-
+               
                 for (const items in data) {
                     
                     data[items].filter(item => {
                         if (item.Name == e.target.value) {
-                            console.log(item)
                             item.Description ? descriptionEl.value = item.Description : descriptionEl.value = "";
 
                             item.Tax ? taxEl.value = item.Tax : taxEl.value = "Non";
@@ -133,14 +112,8 @@ function renderItemsHTML() {
         if ((e.target.value != "" && quantityEl.value != "")) {
             rateEl.value = rate.toFixed(2)
         }
-    });
-
-   
-   
+    }); 
 }
-
-
-
 function renderItemsCategoryHTML() {
     const itemsContainer = document.getElementById("items-container");
     const categoriesDropdown = itemsContainer.querySelector("#category-dropdown");
@@ -154,36 +127,46 @@ function renderItemsCategoryHTML() {
 function getTaxes() {
     const taxesDropDown = document.getElementById("taxes-dropdown");
     const taxPercentSpan = document.getElementById("tax-percent");
-    const totalCost = document.getElementById("order-total")
-
+    const totalCost = document.getElementById("order-total");
+    const tableTaxInputEls = Array.from(document.querySelectorAll("[data-title='Tax'] input"));
+   
     if (taxesDropDown != null) {
-        itemsArr.then(data => {
-            const taxes = data.salesTax
-            //console.log(taxes)
-            const taxesEl = taxes.map(tax => `<option>${tax.Name}</option>`)
-            taxesDropDown.innerHTML += taxesEl.join("")
+        if (tableTaxInputEls.every(el => el.value == "Non")) {
+            return;
+        } else {
+            itemsArr.then(data => {
+                console.log(data)
+                const taxes = data.salesTax
+                const salesTaxGroup = data.salesTaxGroup
+                taxes.push(...salesTaxGroup)
+                //console.log(taxes)
+                const taxesEl = taxes.map(tax => `<option>${tax.Name}</option>`)
+                //const taxGroupEl = salesTaxGroup.map(taxGroup => `<option>${taxGroup.Name}</option>`)
+                taxesDropDown.innerHTML += taxesEl.join("")
+                //taxesDropDown.innerHTML += taxGroupEl.join("")
+                
+                taxesDropDown.addEventListener("change", (e) => {
+                    const tax = e.target.value;
+                    taxes.filter(t => {
+                        if (t.Name == tax) {
+                            taxPercentSpan.textContent = `(${t.Tax}%)`
+                            const percentage = ((Number(t.Tax) / 100) * Number(totalCost.textContent.slice(1))) / 2
+                            let total = Number(totalCost.textContent.slice(1)) + percentage
+                          
+                            total = total.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            });
 
-            taxesDropDown.addEventListener("change", (e) => {
-                const tax = e.target.value;
-                taxes.filter(t => {
-                    if (t.Name == tax) {
-                        taxPercentSpan.textContent = `(${t.Tax}%)`
-                        const percentage = ((Number(t.Tax) / 100) * Number(totalCost.textContent.slice(1))) / 2
-                        let total = Number(totalCost.textContent.slice(1)) + percentage
-                        //console.log(percentage)
-                        total = total.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'USD',
-                        });
-
-                        totalCost.textContent = total
-                    }
+                            totalCost.textContent = total
+                        }
+                    })
+                   
                 })
-                //console.log(tax)
 
             })
-
-        })
+        }
+       
     }
     
 }

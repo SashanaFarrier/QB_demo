@@ -84,7 +84,8 @@ input[type="checkbox"].input-validation-error {
 /*button styles*/
 
 #add-btn,
-#submit-btn {
+#submit-btn,
+#new-sales-order-btn {
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -94,7 +95,8 @@ input[type="checkbox"].input-validation-error {
     background-color: #778da9;
 }
 
-#add-btn {
+#add-btn,
+#new-sales-order-btn {
     color: white;
     background-color: #1b263b;
 }
@@ -112,8 +114,9 @@ input[type="checkbox"].input-validation-error {
 #edit-btn:hover,
 #delete-btn:hover,
 #submit-btn:hover,
-#save-item-btn:hover {
-    opacity: 0.5;
+#save-item-btn:hover,
+#new-sales-order-btn:hover {
+    opacity: 0.8;
 }
 
 .create-sales-order-cta {
@@ -389,4 +392,23 @@ table td[data-title="Total"] {
     gap: 1em;
     max-width: 200px;
     margin-block: 2em;
+}
+
+
+
+/*success page*/
+
+.success-card {
+    max-width: 600px;
+    margin-inline: auto;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    /*overflow: visible*/
+}
+
+.success-icon {
+   font-size: 8rem;
+   position: absolute;
+   left: 0;
+   right: 0;
+   top: -80px;
 }

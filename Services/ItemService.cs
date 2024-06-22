@@ -403,7 +403,7 @@ namespace MvcCodeFlowClientManual.Services
             string itemId = salesTaxGroup.ListID != null ? salesTaxGroup.ListID.GetValue() : null;
             string itemName = salesTaxGroup.Name.GetValue();
             string description = salesTaxGroup.ItemDesc != null ? salesTaxGroup.ItemDesc.GetValue() : null;
-            
+            //string tax = salesTaxGroup.;
             //IQBBaseRefList salesTaxGroupList = salesTaxGroup.ItemSalesTaxRefList;
             //string[] taxGroupList = new string[salesTaxGroupList.Count];
             //for (int i = 0; i < salesTaxGroupList.Count; i++) 
@@ -416,7 +416,7 @@ namespace MvcCodeFlowClientManual.Services
             item.Name = itemName;
             item.Description = description;
             item.Category = "Sales Tax Group";
-
+            //item.Tax = tax;
             return item;
         }
         private Item groupItem(IItemGroupRet groupItem)
