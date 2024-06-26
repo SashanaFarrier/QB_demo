@@ -10,12 +10,20 @@ namespace MvcCodeFlowClientManual.Models
         public string CustomerListID { get; set; }
         public string Name { get; set; }  
         public List<string> Locations { get; set; }
-        public CustomerJob(string name, string listId, List<string> locations)
-        {
-            this.CustomerListID = listId;
-            this.Name = name;
-            this.Locations = locations;
-        }
+        //public List<string> Locations { get; set; }
+        //public CustomerJob(string name, string listId, List<string> locations)
+        //{
+        //    this.CustomerListID = listId;
+        //    this.Name = name;
+        //    this.Locations = locations;
+        //}
+
+        //public CustomerJob(List<string> name)
+        //{
+        //    this.CustomerListID = listId;
+        //    this.Name = name;
+        //    this.Locations = locations;
+        //}
     }
     
 }

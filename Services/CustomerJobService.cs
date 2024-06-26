@@ -18,8 +18,10 @@ namespace MvcCodeFlowClientManual.Services
         
         List<string> locations = new List<string>();
 
-        public async Task<IList<CustomerJob>> GetCustomerJobs()
+        public IList<string> GetCustomerJobs()
         {
+
+            List<string> customerJobs = new List<string>();
 
             if (qBConnection.getSessionManager() != null)
             {
@@ -50,36 +52,38 @@ namespace MvcCodeFlowClientManual.Services
                             string customer = customerQueryList.GetAt(i).FullName.GetValue();
                             string listId = customerQueryList.GetAt(i).ListID.GetValue();
 
-                            if (prevCustomer == "" && !customer.Contains(':'))
-                            {
-                                prevCustomer = customer;
-                            }
+                            //if (prevCustomer == "" && !customer.Contains(':'))
+                            //{
+                            //    prevCustomer = customer;
+                            //}
 
-                            if(customer.Contains(':')) 
-                            {
-                                string[] customerJob = customer.Split(':');
-                                string customerName = customerJob[0];
-                                string location = customerJob[1];
+                            customerJobs.Add(customer);
+                            
+                            //if(customer.Contains(':')) 
+                            //{
+                            //    string[] customerJob = customer.Split(':');
+                            //    string customerName = customerJob[0];
+                            //    string location = customerJob[1];
 
-                                if(prevCustomer == customerName)
-                                {
-                                    locations.Add(location);
-                                    //prevCustomer = customerName;
-                                }
-                                
-                                if (i <= customerQueryList.Count - 1 )
-                                {
-                                    string customer2 = customerQueryList.GetAt(i + 1).FullName.GetValue();
-                                    if (!customer2.Contains(':'))
-                                    {
-                                      
-                                        CustomerJobs.Add(new CustomerJob(customerName, listId, locations));
-                                        locations = new List<string>();
-                                        prevCustomer = customer2;
+                            //    if(prevCustomer == customerName)
+                            //    {
+                            //        locations.Add(location);
+                            //        //prevCustomer = customerName;
+                            //    }
 
-                                    }
-                                }
-                            }
+                            //    if (i <= customerQueryList.Count - 1 )
+                            //    {
+                            //        string customer2 = customerQueryList.GetAt(i + 1).FullName.GetValue();
+                            //        if (!customer2.Contains(':'))
+                            //        {
+
+                            //            CustomerJobs.Add(new CustomerJob(customerName, listId, locations));
+                            //            locations = new List<string>();
+                            //            prevCustomer = customer2;
+
+                            //        }
+                            //    }
+                            //}
                         }
                     }
                 }
@@ -89,7 +93,7 @@ namespace MvcCodeFlowClientManual.Services
                 }
             }
             
-            return (CustomerJobs);
+            return (customerJobs);
         }
     }
 }
