@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using MvcCodeFlowClientManual.Models;
+using System.Collections.Generic;
+using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
@@ -12,6 +14,11 @@ namespace MvcCodeFlowClientManual
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            Bootstrapper.Initialise();
+
+            //ModelBinders.Binders.Add(typeof(Dictionary<ItemCategory, List<Item>>), new DictionaryModelBinder());
+
         }
 
         void Application_EndRequest(object sender, System.EventArgs e)

@@ -13,7 +13,7 @@ namespace MvcCodeFlowClientManual.Config
         public QBConnection()
         {
             sessionManager = new QBSessionManager();
-            sessionManager.OpenConnection("", "Test");
+            sessionManager.OpenConnection("", "Sample Rock Castle Construction");
             sessionManager.BeginSession("", ENOpenMode.omDontCare);
         }
 

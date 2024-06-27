@@ -1,0 +1,62 @@
+﻿@using MvcCodeFlowClientManual.Models
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("AddItem", "App")">
+                <input type="hidden" name="ItemId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col mb-3">
+                        <div id="items-container">
+                            <div class="categories">
+                                <label for="category-dropdown">Item Category</label>
+                                <select id="category-dropdown" class="form-select mb-3 category-list" aria-label="category list" name="Category" required>
+                                    <option value="">-- Please Select --</option>
+                                </select>
+                                @*@Html.ValidationMessage("Category", "Please select item category from the dropdown", new { @class = "text-danger", style = "display:none" })*@
+                            </div>
+                            <div class="items">
+                                <label for="item-dropdown" class="form-label">Item</label>
+                                <select id="item-dropdown" class="form-select mb-3 items-list" aria-label="items list" name="Name" required title="Select the item category before selecting the item">
+            <option selected value="">-- Please Select --</option>
+        </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-3">
+                        <label for="desc" class="form-label">Description</label>
+                        <input name="Description" type="text" class="form-control" id="desc">
+                    </div>
+                    <div class="col mb-3">
+                        <label for="qty" class="form-label">Quantity</label>
+                        <input name="Quantity" type="text" class="form-control" id="qty" required>
+                    </div>
+                    <div id="amount-col" class="col mb-3">
+                        <label for="amt" class="form-label">Amount</label>
+                        <input name="Amount" type="text" class="form-control" id="amt" required>
+                        @*@Html.ValidationMessage("Amount", new { @class = "text-danger"})*@
+                    </div>
+                    <div id="rate-col" class="col mb-3">
+                        <label for="rate" class="form-label">Rate</label>
+                        <input name="Rate" type="text" class="form-control" id="rate" >
+                    </div>
+                    <div id="tax-col" class="col mb-3">
+                        <label for="tax" class="form-label">Tax</label>
+                        <input name="Tax" type="text" class="form-control" id="tax" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>*@
+                    <button id="save-item-btn" type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+

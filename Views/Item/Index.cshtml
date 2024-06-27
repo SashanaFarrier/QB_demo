@@ -1,0 +1,54 @@
+﻿@using MvcCodeFlowClientManual.Models
+
+@model List<Item>
+
+@{
+    ViewBag.Title = "Item Page";
+    //var items = new List<Item>();
+    
+}
+
+<div class="jumbotron">
+    <h1>QuickBooks Demo sample application using QBFC</h1>
+    <h2>Get customer names</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+
+        @using (Html.BeginForm("GetItems", "Item", FormMethod.Get))
+        {
+            
+            <div>
+            <input type="submit" name="submitButton" value="Connect to QuickBooks" />
+            <ul>
+                @if (Model != null && Model != null)
+                {
+                    //var sortedItems = Model.OrderBy(item => item.Name).ToList();
+                    foreach (var item in Model)
+                    {
+
+
+                        <li>
+                            @item.Name
+                            @*<ul>
+                        @foreach (var sub in item.SubItems)
+                        {
+                            <li>@sub.name</li>
+                        }
+                    </ul>*@
+
+
+                        </li>
+                    }
+                }
+
+            </ul>
+            
+            </div>
+            
+        }
+
+
+    </div>
+</div>

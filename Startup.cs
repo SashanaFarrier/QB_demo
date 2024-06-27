@@ -4,6 +4,9 @@ using Microsoft.Owin.Security.Cookies;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
 using Owin;
+using MvcCodeFlowClientManual.Data;
+using System.Web.Services.Description;
+using Microsoft.Extensions.DependencyInjection;
 
 [assembly: OwinStartup(typeof(MvcCodeFlowClientManual.Startup))]
 
@@ -23,8 +26,8 @@ namespace MvcCodeFlowClientManual
                 AuthenticationType = "TempState",
                 AuthenticationMode = AuthenticationMode.Passive
             });
-        }
 
+        }
 
     }
 }
