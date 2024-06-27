@@ -282,7 +282,6 @@
     <Compile Include="Services\SalesOrderService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Tests\TestConnection.cs" />
-    <Compile Include="Models\ViewModels\ItemsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

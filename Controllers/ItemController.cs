@@ -1,7 +1,6 @@
 ﻿
 using MvcCodeFlowClientManual.Models;
 using MvcCodeFlowClientManual.Services;
-using MvcCodeFlowClientManual.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
